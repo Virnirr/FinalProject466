@@ -49,7 +49,7 @@ public class Main {
                                          double currentIGR) {
         // recursively prints the decision tree.
 
-        Matrix decisionTree = new Matrix(data);
+        DecisionTree decisionTree = new DecisionTree(data);
         // base case return if either attribute or rows is empty
         if (attributes.size() == 0 || rows.size() == 0 || currentIGR <= 0.01) {
             int mostCommonLabel = decisionTree.findMostCommonValue(rows);

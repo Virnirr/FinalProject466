@@ -53,14 +53,14 @@ public class RandomForest {
         return bootstrapData;
     }
 
-    private <T> void train(int matrix[][]) {
-        // Trains the model with given X features and Y labels in the datasets
-        ArrayList<T> bootstrap_sample = this.create_bootstrap_sampels(matrix);
-
-        ArrayList<T> base_learner_list = new ArrayList<T>();
-
-        for (int base_learner_idx = 0; base_leanrer_idx < this.n_base_learner; base_learner_idx++){
-            DecisionTree base_learner = DecisionTree()
-        }
-    }
+//    private <T> void train(int matrix[][]) {
+//        // Trains the model with given X features and Y labels in the datasets
+//        ArrayList<T> bootstrap_sample = this.create_bootstrap_sampels(matrix);
+//
+//        ArrayList<T> base_learner_list = new ArrayList<T>();
+//
+//        for (int base_learner_idx = 0; base_leanrer_idx < this.n_base_learner; base_learner_idx++){
+//            DecisionTree base_learner = DecisionTree()
+//        }
+//    }
 }
