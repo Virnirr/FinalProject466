@@ -5,13 +5,16 @@ import java.util.stream.Collectors;
 
 class TreeNode {
     private final int featureIdx;
+    private final String dataType;
     private final double featureVal;
     private TreeNode left;
     private TreeNode right;
 
-    public TreeNode(int featureIdx, double featureVal) {
+    public TreeNode(int featureIdx, double featureVal, String dataType) {
+
         this.featureIdx = featureIdx;
         this.featureVal = featureVal;
+        this.dataType = dataType;
         this.left = null;
         this.right = null;
     }

@@ -140,6 +140,8 @@ public class DecisionTree {
         return valToRowMapping;
     }
 
+    public splitContinuousData()
+
     public void printDecisionTree(int[][] data,
                                   ArrayList<Integer> attributes,
                                   ArrayList<Integer> rows,
