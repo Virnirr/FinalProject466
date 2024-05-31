@@ -94,7 +94,6 @@ public class Main {
     public static void main(String[] args) {
         String filePath = new File("").getAbsolutePath();
         String path_to_data = filePath.concat("/src/AIDS_Classification_50000.csv");
-
         System.out.println(path_to_data);
 
         int[][] matrix = aids_data_parser(path_to_data);
@@ -104,13 +103,17 @@ public class Main {
 
 
 //        System.out.println(Arrays.deepToString(matrix));
-//        int totalAttributes = matrix[0].length - 1;
-//        ArrayList<Integer> attributes =
-//                (IntStream.range(0, totalAttributes))
-//                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
-//        ArrayList<Integer> allRows = getAllRows(matrix);
-//
-//        printDecisionTree(matrix, attributes, allRows, 0, 100);
+
+        int totalAttributes = matrix[0].length - 1;
+        ArrayList<Integer> attributes =
+                (IntStream.range(0, totalAttributes))
+                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+        ArrayList<Integer> allRows = getAllRows(matrix);
+        System.out.println(allRows);
+        System.out.println(attributes);
+
+        DecisionTree tree = new DecisionTree(matrix);
+        tree.printDecisionTree(matrix, attributes, allRows, 0, 100);
     }
 
 }

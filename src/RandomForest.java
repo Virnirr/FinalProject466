@@ -29,7 +29,7 @@ public class RandomForest {
         this.num_of_features_splitting = num_of_features_splitting;
     }
 
-    private <T> ArrayList<T> create_bootstrap_sampels(int matrix[][]) {
+    private <T> ArrayList<T> create_bootstrap_samples(int matrix[][]) {
         // note return type is Set( ArrayList(index of features), ArrayList(Index of label associated with features)
         ArrayList<ArrayList<Integer>> randomFeatures = new ArrayList<>();
         ArrayList<Integer> randomLabels = new ArrayList<>();
@@ -55,10 +55,9 @@ public class RandomForest {
 
 //    private <T> void train(int matrix[][]) {
 //        // Trains the model with given X features and Y labels in the datasets
-//        ArrayList<T> bootstrap_sample = this.create_bootstrap_sampels(matrix);
+//        ArrayList<T> bootstrap_sample = this.create_bootstrap_samples(matrix);
 //
 //        ArrayList<T> base_learner_list = new ArrayList<T>();
-//
 //
 //        for (int base_learner_idx = 0; base_learner_idx < this.n_base_learner; base_learner_idx++){
 //            DecisionTree base_learner = new DecisionTree();

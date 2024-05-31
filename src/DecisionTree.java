@@ -140,17 +140,15 @@ public class DecisionTree {
         return valToRowMapping;
     }
 
-    public static void printDecisionTree(int[][] data,
-                                         ArrayList<Integer> attributes,
-                                         ArrayList<Integer> rows,
-                                         int level,
-                                         double currentIGR) {
+    public void printDecisionTree(int[][] data,
+                                  ArrayList<Integer> attributes,
+                                  ArrayList<Integer> rows,
+                                  int level,
+                                  double currentIGR) {
         // recursively prints the decision tree.
-
-        DecisionTree decisionTree = new DecisionTree(data);
         // base case return if either attribute or rows is empty
         if (attributes.size() == 0 || rows.size() == 0 || currentIGR <= 0.01) {
-            int mostCommonLabel = decisionTree.findMostCommonValue(rows);
+            int mostCommonLabel = this.findMostCommonValue(rows);
             System.out.println("\t".repeat(level) + "value = " + mostCommonLabel);
             return;
         }
@@ -158,7 +156,7 @@ public class DecisionTree {
         HashMap<Integer, Double> attributeIGR = new HashMap<>();
 
         for (Integer attr : attributes) {
-            attributeIGR.put(attr, decisionTree.computeIGR(attr, rows));
+            attributeIGR.put(attr, this.computeIGR(attr, rows));
         }
 
         // get the attribute with highest IGR from hashmap
@@ -172,15 +170,15 @@ public class DecisionTree {
                 highestIGR = igr;
             }
         }
-        if (highestIGR <= 0.02) {
-            int mostCommonLabel = decisionTree.findMostCommonValue(rows);
-            System.out.println("\t".repeat(level) + "value = " + mostCommonLabel);
-            return;
-        }
+//        if (highestIGR <= 0.02) {
+//            int mostCommonLabel = this.findMostCommonValue(rows);
+//            System.out.println("\t".repeat(level) + "value = " + mostCommonLabel);
+//            return;
+//        }
 
         // contains the attribute values --> list of rows with attribute value
         HashMap<Integer, ArrayList<Integer>> splitAttribute =
-                decisionTree.split(attributeWithHighestIGR, rows);
+                this.split(attributeWithHighestIGR, rows);
 
         // remove attribute from attributes arraylist
         attributes.remove(Integer.valueOf(attributeWithHighestIGR));
@@ -191,7 +189,7 @@ public class DecisionTree {
 
             ArrayList<Integer> rowsAssocWithAttrVal = entry.getValue();
             // get the IGR of current value to recurse on; note: base case will result in printing value if <= 0.01
-            double currValIGR = decisionTree.computeIGR(attributeWithHighestIGR, rows);
+            double currValIGR = this.computeIGR(attributeWithHighestIGR, rows);
             System.out.println("\t".repeat(level) + "When attribute " +
                     (attributeWithHighestIGR + 1) +
                     " has value " + valInAttribute);
