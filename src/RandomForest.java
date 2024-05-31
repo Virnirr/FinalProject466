@@ -59,8 +59,10 @@ public class RandomForest {
 //
 //        ArrayList<T> base_learner_list = new ArrayList<T>();
 //
-//        for (int base_learner_idx = 0; base_leanrer_idx < this.n_base_learner; base_learner_idx++){
-//            DecisionTree base_learner = DecisionTree()
+//
+//        for (int base_learner_idx = 0; base_learner_idx < this.n_base_learner; base_learner_idx++){
+//            DecisionTree base_learner = new DecisionTree();
+//
 //        }
 //    }
 }
