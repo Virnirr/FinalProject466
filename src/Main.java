@@ -49,6 +49,48 @@ public class Main {
         }
         return rows;
     }
+
+    public static double[][] normalizeData(int[][] data) {
+        int rows = data.length;
+        int cols = data[0].length;
+        double[][] normalizedData = new double[rows][cols];
+        int[] min = new int[cols];
+        int[] max = new int[cols];
+
+        // Initialize min and max arrays
+        for (int i = 0; i < cols; i++) {
+            min[i] = Integer.MAX_VALUE;
+            max[i] = Integer.MIN_VALUE;
+        }
+        // Find min and max for each column
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (data[i][j] < min[j]) {
+                    min[j] = data[i][j];
+                }
+                if (data[i][j] > max[j]) {
+                    max[j] = data[i][j];
+                }
+            }
+        }
+        // Normalize data using min-max normalization
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (max[j] == min[j]) {
+                    normalizedData[i][j] = 0; // If max equals min, set to 0 to avoid division by zero
+                } else {
+                    normalizedData[i][j] = (double)(data[i][j] - min[j]) / (max[j] - min[j]);
+                }
+            }
+        }
+
+        return normalizedData;
+    }
+
+
+
+
+
     public static void main(String[] args) {
         String filePath = new File("").getAbsolutePath();
         String path_to_data = filePath.concat("/src/AIDS_Classification_50000.csv");
@@ -56,6 +98,11 @@ public class Main {
         System.out.println(path_to_data);
 
         int[][] matrix = aids_data_parser(path_to_data);
+
+        System.out.println(Arrays.deepToString(normalizeData(matrix)));
+
+
+
 //        System.out.println(Arrays.deepToString(matrix));
 //        int totalAttributes = matrix[0].length - 1;
 //        ArrayList<Integer> attributes =
@@ -65,4 +112,5 @@ public class Main {
 //
 //        printDecisionTree(matrix, attributes, allRows, 0, 100);
     }
+
 }
