@@ -52,7 +52,6 @@ public class Main {
     public static void main(String[] args) {
         String filePath = new File("").getAbsolutePath();
         String path_to_data = filePath.concat("/src/AIDS_Classification_50000.csv");
-
         System.out.println(path_to_data);
 
         int[][] matrix = aids_data_parser(path_to_data);
