@@ -57,12 +57,16 @@ public class Main {
 
         int[][] matrix = aids_data_parser(path_to_data);
 //        System.out.println(Arrays.deepToString(matrix));
-//        int totalAttributes = matrix[0].length - 1;
-//        ArrayList<Integer> attributes =
-//                (IntStream.range(0, totalAttributes))
-//                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
-//        ArrayList<Integer> allRows = getAllRows(matrix);
-//
-//        printDecisionTree(matrix, attributes, allRows, 0, 100);
+
+        int totalAttributes = matrix[0].length - 1;
+        ArrayList<Integer> attributes =
+                (IntStream.range(0, totalAttributes))
+                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+        ArrayList<Integer> allRows = getAllRows(matrix);
+        System.out.println(allRows);
+        System.out.println(attributes);
+
+        DecisionTree tree = new DecisionTree(matrix);
+        tree.printDecisionTree(matrix, attributes, allRows, 0, 100);
     }
 }
