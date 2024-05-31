@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 public class DecisionTree {
 
@@ -139,8 +136,6 @@ public class DecisionTree {
         }
         return valToRowMapping;
     }
-
-    public splitContinuousData()
 
     public void printDecisionTree(int[][] data,
                                   ArrayList<Integer> attributes,
