@@ -1,75 +1,79 @@
-import java.util.*;
-import java.util.stream.*;
+import java.util.Arrays;
 
 public class LinearRegression {
     private double learningRate;
     private int numIterations;
-    private List<Double> weights;
+    private double[] weights;
     private double bias;
 
     public LinearRegression(double learningRate, int numIterations) {
         this.learningRate = learningRate;
         this.numIterations = numIterations;
-        this.weights = new ArrayList<>();
-        this.bias = 0.0;
     }
 
     // Fit the model to the data
-    public List<Double> fit(List<List<Double>> inputs, List<Double> expectedOutputs) {
-        int numFeatures = inputs.get(0).size();
-        int numSamples = inputs.size();
+    public double[] fit(int[][] intInputs, int[] intExpectedOutputs) {
+        // convert parameter lists to doubles
+        double[][] inputs = Arrays.stream(intInputs)
+                                    .map(row -> Arrays.stream(row)
+                                            .asDoubleStream()
+                                            .toArray())
+                                    .toArray(double[][]::new);
+        double[] expectedOutputs = Arrays.stream(intExpectedOutputs).asDoubleStream().toArray();
+
+
+        int numFeatures = inputs[0].length;
+        int numSamples = inputs.length;
 
         // Initialize weights and bias
-        weights = new ArrayList<>();
-        for (int i = 0; i < numFeatures; i++) {
-            weights.add(0.0);
-        };
+        weights = new double[numFeatures];
         bias = 0.0;
 
         // train for numIterations
         for (int i = 0; i < numIterations; i++) {
 
             // list of gradients for each feature
-            List<Double> weightGradientSum = new ArrayList<>(numFeatures);
-            for (int j = 0; j < numFeatures; j++) {
-                weightGradientSum.add(0.0);
-            }
+            double[] weightGradientSum = new double[numFeatures];
             // sum of bias's gradient
             double biasGradientSum = 0.0;
 
             // go to each sample
             for (int j = 0; j < numSamples; j++) {
-                List<Double> inputVector = inputs.get(j);
-                double expectedOutput = expectedOutputs.get(j);
+                double[] inputVector = inputs[j];
+                double expectedOutput = expectedOutputs[j];
                 double prediction = predict(inputVector);
                 double error = prediction - expectedOutput;
 
                 for (int k = 0; k < numFeatures; k++) {
-                    weightGradientSum.set(k, weightGradientSum.get(k) + inputVector.get(k) * error);
+                    weightGradientSum[k] += inputVector[k] * error;
                 }
                 biasGradientSum += error;
             }
 
             // Update weights and bias
             for (int k = 0; k < numFeatures; k++) {
-                double avgWeightGradient = weightGradientSum.get(k) / numSamples;
-                weights.set(k, weights.get(k) - learningRate * avgWeightGradient);
+                double avgWeightGradient = weightGradientSum[k] / numSamples;
+                weights[k] -= learningRate * avgWeightGradient;
             }
             double avgBiasGradient = biasGradientSum / numSamples;
             bias -= learningRate * avgBiasGradient;
         }
 
         // Return weights and bias
-        List<Double> result = new ArrayList<>(weights);
-        result.add(bias);
+        double[] result = new double[weights.length + 1];
+        for (int i = 0; i < weights.length; i++) {
+            result[i] = weights[i];
+        }
+        result[result.length - 1] = bias;
+
         return result;
     }
 
     // Make a prediction based on current weights and bias
-    public double predict(List<Double> inputVector) {
+    public double predict(double[] inputVector) {
         double prediction = 0.0;
-        for (int i = 0; i < inputVector.size(); i++) {
-            prediction += inputVector.get(i) * weights.get(i);
+        for (int i = 0; i < inputVector.length; i++) {
+            prediction += inputVector[i] * weights[i];
         }
         prediction += bias;
         return prediction;
