@@ -300,7 +300,7 @@ public class Main {
         TreeNode decisionTree = new TreeNode(-1, -1, new ArrayList<TreeNode>(), -1);
         tree.printDecisionTree(matrix, attributes, allRows, 0, 100, decisionTree);
         ArrayList<Integer> features_to_predict = new ArrayList<Integer>(
-                Arrays.asList(7,0,3,1,0,1,0,100,0,0,1,0,1,0,1,0,0,1,6,3,7,6)
+                Arrays.asList(7,3,5,4,1,0,0,100,0,0,1,0,1,0,1,0,1,0,9,9,4,1)
         );
 
         System.out.println("DONE WITH TRAINING");
