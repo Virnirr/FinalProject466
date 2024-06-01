@@ -3,7 +3,7 @@ import java.util.*;
 public class DecisionTree {
 
     public int[][] matrix;
-    private final int LABEL_COLUMN = 4;
+//    private final int LABEL_COLUMN = 22;
     public DecisionTree(int[][] matrix) {
         this.matrix = matrix;
     }
@@ -19,6 +19,9 @@ public class DecisionTree {
             }
         }
         return total_freq;
+    }
+    private int findLabelCol() {
+        return this.matrix[0].length - 1;
     }
     private HashSet<Integer> findDifferentValues(int attribute, ArrayList<Integer> rows) {
         //Examines only the specified rows of the array. It returns a HashSet
@@ -50,12 +53,12 @@ public class DecisionTree {
 
     private double findEntropy(ArrayList<Integer> rows) {
         //finds the entropy of the dataset that consists of the specified rows.
-        HashSet<Integer> unqiue_values_from_row = findDifferentValues(LABEL_COLUMN, rows);
+        HashSet<Integer> unqiue_values_from_row = findDifferentValues(findLabelCol(), rows);
         double entropy = 0;
 
         // find total entropy in specified rows
         for (Integer val : unqiue_values_from_row) {
-            double pr_c = (double) findFrequency(LABEL_COLUMN, val, rows) / rows.size();
+            double pr_c = (double) findFrequency(findLabelCol(), val, rows) / rows.size();
             double entropy_temp = (-1) * pr_c * log2(pr_c);
             entropy += entropy_temp;
         }
@@ -110,11 +113,11 @@ public class DecisionTree {
         // the defined by the specified rows.
 
         // basically return the most common label
-        HashSet<Integer> categoryValues = findDifferentValues(LABEL_COLUMN, rows);
+        HashSet<Integer> categoryValues = findDifferentValues(findLabelCol(), rows);
         int mostFrequentCategory = 0;
         int mostFrequencyAmount = -1;
         for (Integer category : categoryValues) {
-            int frequency = findFrequency(LABEL_COLUMN, category, rows);
+            int frequency = findFrequency(findLabelCol(), category, rows);
             if (frequency > mostFrequencyAmount) {
                 mostFrequentCategory = category;
                 mostFrequencyAmount = frequency;
@@ -141,12 +144,14 @@ public class DecisionTree {
                                   ArrayList<Integer> attributes,
                                   ArrayList<Integer> rows,
                                   int level,
-                                  double currentIGR) {
+                                  double currentIGR, TreeNode parent) {
         // recursively prints the decision tree.
         // base case return if either attribute or rows is empty
         if (attributes.size() == 0 || rows.size() == 0) {
             int mostCommonLabel = this.findMostCommonValue(rows);
             System.out.println("\t".repeat(level) + "value = " + mostCommonLabel);
+            // add leaf node to parent node as final path
+            parent.addTreePath(new TreeNode(-1, -1, null, mostCommonLabel));
             return;
         }
 
@@ -167,9 +172,11 @@ public class DecisionTree {
                 highestIGR = igr;
             }
         }
+
 //        if (highestIGR <= 0.02) {
 //            int mostCommonLabel = this.findMostCommonValue(rows);
 //            System.out.println("\t".repeat(level) + "value = " + mostCommonLabel);
+//            parent.addTreePath(new TreeNode(-1, -1, null, mostCommonLabel));
 //            return;
 //        }
 
@@ -179,7 +186,6 @@ public class DecisionTree {
 
         // remove attribute from attributes arraylist
         attributes.remove(Integer.valueOf(attributeWithHighestIGR));
-
         for (Map.Entry<Integer, ArrayList<Integer>> entry : splitAttribute.entrySet()) {
             int valInAttribute = entry.getKey();
 
@@ -190,8 +196,11 @@ public class DecisionTree {
                     (attributeWithHighestIGR + 1) +
                     " has value " + valInAttribute);
 
-            // recursive call
-            printDecisionTree(data, attributes, rowsAssocWithAttrVal, level+1, currValIGR);
+            TreeNode childNode = new TreeNode(attributeWithHighestIGR, valInAttribute, new ArrayList<>(), -1);
+
+            // recursive call on childNode and build the tree
+            printDecisionTree(data, attributes, rowsAssocWithAttrVal, level+1, currValIGR, childNode);
+            parent.addTreePath(childNode); // add the child node path
         }
     }
 }

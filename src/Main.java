@@ -4,9 +4,13 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Main {
+
+    private static final int SIZE_OF_MATRIX = 2139;
+    private static final int SIZE_OF_COLS = 23;
+    private static final String RELATIVE_FILE_PATH = "/src/output.csv";
     public static int[][] aids_data_parser(String filename) {
         try {
-            int[][] matrix = new int[50000][];
+            int[][] matrix = new int[SIZE_OF_MATRIX][];
             int rowIndex = 0;
             File file = new File(filename);
             Scanner scan_file = new Scanner(file);
@@ -34,7 +38,7 @@ public class Main {
         }
     }
     public static int[] arrayListToArray(ArrayList<Double> row) {
-        int[] arrayRow = new int[23];
+        int[] arrayRow = new int[SIZE_OF_COLS];
         for (int i = 0; i < row.size(); i++) {
             arrayRow[i] = row.get(i).intValue();
         }
@@ -86,45 +90,145 @@ public class Main {
         return normalizedData;
     }
 
+//    public static void categorizeFeature(int[][] data, ArrayList<Integer> category) {
+//        for (int featureIdx : category) {
+//            TreeSet<Integer> sortedFeature = new TreeSet<>();
+//            for (int[] row : data) {
+//                sortedFeature.add(row[featureIdx]);
+//            }
+//
+//            int n = sortedFeature.size();
+//            int[] boundaries = new int[10];
+//            int step = (int) Math.ceil((double) n / 10);
+//            for (int i = 0; i < 9; i++) {
+//                boundaries[i] = (i + 1) * step;
+//            }
+//            boundaries[9] = n;
+//
+//            ArrayList<HashSet<Integer>> categoryValues = new ArrayList<>();
+//            for (int i = 0; i < 10; i++) {
+//                categoryValues.add(new HashSet<>());
+//            }
+//
+//            int index = 0;
+//            for (int value : sortedFeature) {
+//                int categoryIndex = Arrays.binarySearch(boundaries, index);
+//                if (categoryIndex < 0) {
+//                    categoryIndex = -categoryIndex - 2;
+//                }
+//                categoryValues.get(categoryIndex).add(value);
+//                index++;
+//            }
+//
+//            for (int[] row : data) {
+//                int value = row[featureIdx];
+//                for (int i = 0; i < 10; i++) {
+//                    if (categoryValues.get(i).contains(value)) {
+//                        row[featureIdx] = i + 1;
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+//    }
+
+
 
 
     public static void categorizeFeature(int[][] data, ArrayList<Integer> category) {
 
-        int Q1 = data.length / 4;
-        int Q2 = (int) ((double) data.length * 0.5);
-        int Q3 = (int) ((double) data.length * 0.75);
-        int Q4 = data.length;
-        System.out.println(Q1);
-        System.out.println(Q2);
-        System.out.println(Q3);
-        System.out.println(Q4);
         for (int feature_idx : category) {
-            ArrayList<Integer> sorted_feature = new ArrayList<>();
-            for (int row = 0; row < data.length; row++) {
-                sorted_feature.add(data[row][feature_idx]);
+
+            TreeSet<Integer> sorted_feature = new TreeSet<>();
+            for (int[] row : data) {
+                sorted_feature.add(row[feature_idx]);
             }
 
-            Collections.sort(sorted_feature);
-            ArrayList<Integer> Q1_Values = new ArrayList<Integer>(sorted_feature.subList(0, Q1));
-            ArrayList<Integer> Q2_Values = new ArrayList<Integer>(sorted_feature.subList(Q1, Q2));
-            ArrayList<Integer> Q3_Values = new ArrayList<Integer>(sorted_feature.subList(Q2, Q3));
-            ArrayList<Integer> Q4_Values = new ArrayList<Integer>(sorted_feature.subList(Q3, Q4));
 
-            for (int i = 0; i < data.length; i++) {
-                if (Q1_Values.contains(data[i][feature_idx]))
-                    data[i][feature_idx] = 1;
-                else if (Q2_Values.contains(data[i][feature_idx]))
-                    data[i][feature_idx] = 2;
-                else if (Q3_Values.contains(data[i][feature_idx]))
-                    data[i][feature_idx] = 3;
-                else if (Q4_Values.contains(data[i][feature_idx]))
-                    data[i][feature_idx] = 4;
+            ArrayList<ArrayList<Integer>> vals = new ArrayList<>();
+            int n = sorted_feature.size();
+            int[] boundaries = new int[10];
+            int step = (int) Math.ceil((double) n / 10);
+            for (int i = 0; i < 9; i++) {
+                boundaries[i] = (i + 1) * step;
+            }
+            boundaries[9] = n;
+
+
+            ArrayList<HashSet<Integer>> categoryValues = new ArrayList<>();
+            for (int i = 0; i < 10; i++) {
+                categoryValues.add(new HashSet<>());
+            }
+
+            int index = 0;
+            for (int value : sorted_feature) {
+                int categoryIndex = Arrays.binarySearch(boundaries, index);
+                if (categoryIndex < 0) {
+                    categoryIndex = -categoryIndex - 2;
+                    if (categoryIndex < 0) {
+                        categoryIndex = 0;
+                    }
+                }
+                categoryValues.get(categoryIndex).add(value);
+                index++;
+            }
+
+            for (int[] row : data) {
+                int value = row[feature_idx];
+                boolean found = false;
+                for (int i = 0; i < 10; i++) {
+                    if (categoryValues.get(i).contains(value)) {
+                        row[feature_idx] = i + 1;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    row[feature_idx] = 1;
+                }
             }
         }
     }
 
+    public static void remove_numeric_features(int[][] matrix, String fileName) {
+        ArrayList<Integer> numeric_features = new ArrayList<Integer>(Arrays.asList(0, 2, 3, 10, 18, 19, 20, 21));
+
+        // Create a StringBuilder to store the CSV data
+        StringBuilder csvData = new StringBuilder();
+
+        // Iterate over each row of the matrix
+        for (int i = 0; i < matrix.length; i++) {
+            // Create a StringBuilder to store the current row data
+            StringBuilder rowData = new StringBuilder();
+
+            // Iterate over each column of the matrix
+            for (int j = 0; j < matrix[i].length; j++) {
+                // Check if the current column is not a numeric feature
+                if (!numeric_features.contains(j)) {
+                    // Append the value to the row data
+                    rowData.append(matrix[i][j]).append(",");
+                }
+            }
+
+            // Remove the trailing comma from the row data
+            rowData.setLength(rowData.length() - 1);
+
+            // Append the row data to the CSV data
+            csvData.append(rowData.toString()).append("\n");
+        }
+
+        // Write the CSV data to a file
+        try (FileWriter writer = new FileWriter(fileName)) {
+            writer.write(csvData.toString());
+            System.out.println("CSV file created successfully.");
+        } catch (IOException e) {
+            System.out.println("An error occurred while writing to the file.");
+            e.printStackTrace();
+        }
+    }
+
     public static void categorize_features(int [][] matrix) {
-        categorizeFeature(matrix, new ArrayList<Integer>(Arrays.asList(0, 1 , 2, 3, 7, 10, 18, 19 , 20, 21)));
+        categorizeFeature(matrix, new ArrayList<Integer>(Arrays.asList(0, 2, 3, 10, 18, 19 , 20, 21)));
         String csvFile = "output.csv";
 
         try (FileWriter writer = new FileWriter(csvFile)) {
@@ -146,24 +250,43 @@ public class Main {
             e.printStackTrace();
         }
 
-        System.out.println(Arrays.deepToString(matrix));
+//        System.out.println(Arrays.deepToString(matrix));
     }
 
-
+    public static int predictLabel(TreeNode tree, ArrayList<Integer> featureValues) {
+        // return either 0 or 1 for label
+        TreeNode currNode = tree;
+        while (currNode.getPaths() != null) {
+            // find the current path and go through the path iteratively
+            for (TreeNode node : currNode.getPaths()) {
+                if (node.is_leaf()) {
+                    currNode = node;
+                    break;
+                }
+                if (featureValues.get(node.getFeatureIdx()) ==  node.getFeatureVal()) {
+                    currNode = node;
+                    break;
+                }
+            }
+        }
+        return currNode.getLabel();
+    }
 
 
     public static void main(String[] args) {
         String filePath = new File("").getAbsolutePath();
-        String path_to_data = filePath.concat("/src/output.csv");
+        String path_to_data = filePath.concat(RELATIVE_FILE_PATH);
         System.out.println(path_to_data);
 
         int[][] matrix = aids_data_parser(path_to_data);
-
+//        categorize_features(matrix);
 //        System.out.println(Arrays.deepToString(normalizeData(matrix)));
 
 
 //        System.out.println(Arrays.deepToString(matrix));
 //        categorize_features(matrix);
+
+//        remove_numeric_features(matrix, "removed_numeric.csv");
 
         int totalAttributes = matrix[0].length - 1;
         ArrayList<Integer> attributes =
@@ -173,8 +296,15 @@ public class Main {
         System.out.println(allRows);
         System.out.println(attributes);
 
-        DecisionTree tree = new DecisionTree(matrix);
-        tree.printDecisionTree(matrix, attributes, allRows, 0, 100);
-    }
 
+        DecisionTree tree = new DecisionTree(matrix);
+        TreeNode decisionTree = new TreeNode(-1, -1, new ArrayList<TreeNode>(), -1);
+        tree.printDecisionTree(matrix, attributes, allRows, 0, 100, decisionTree);
+        ArrayList<Integer> features_to_predict = new ArrayList<Integer>(
+                Arrays.asList(7,0,3,1,0,1,0,100,0,0,1,0,1,0,1,0,0,1,6,3,7,6)
+        );
+
+        System.out.println("DONE WITH TRAINING");
+        System.out.println(predictLabel(decisionTree, features_to_predict));
+    }
 }
