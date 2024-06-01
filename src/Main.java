@@ -296,7 +296,6 @@ public class Main {
         System.out.println(allRows);
         System.out.println(attributes);
 
-
         DecisionTree tree = new DecisionTree(matrix);
         TreeNode decisionTree = new TreeNode(-1, -1, new ArrayList<TreeNode>(), -1);
         tree.printDecisionTree(matrix, attributes, allRows, 0, 100, decisionTree);
