@@ -144,7 +144,7 @@ public class DecisionTree {
                                   double currentIGR) {
         // recursively prints the decision tree.
         // base case return if either attribute or rows is empty
-        if (attributes.size() == 0 || rows.size() == 0 || currentIGR <= 0.01) {
+        if (attributes.size() == 0 || rows.size() == 0) {
             int mostCommonLabel = this.findMostCommonValue(rows);
             System.out.println("\t".repeat(level) + "value = " + mostCommonLabel);
             return;
@@ -179,7 +179,6 @@ public class DecisionTree {
 
         // remove attribute from attributes arraylist
         attributes.remove(Integer.valueOf(attributeWithHighestIGR));
-
 
         for (Map.Entry<Integer, ArrayList<Integer>> entry : splitAttribute.entrySet()) {
             int valInAttribute = entry.getKey();
