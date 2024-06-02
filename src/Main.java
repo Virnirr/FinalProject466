@@ -1,3 +1,4 @@
+import javax.sound.sampled.Line;
 import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -272,11 +273,42 @@ public class Main {
         return currNode.getLabel();
     }
 
+    public static int[] getLastColumn(int[][] matrix) {
+        int rows = matrix.length;
+        int cols = matrix[0].length;
+        int[] lastColumn = new int[rows];
+
+        for (int i = 0; i < rows; i++) {
+            lastColumn[i] = matrix[i][cols - 1]; // Assign the last element of each row to the new array
+        }
+
+        return lastColumn;
+    }
+
+    public static int[][] removeLastColumn(int[][] array) {
+        int rows = array.length;
+        int cols = array[0].length - 1;
+        int[][] newArray = new int[rows][cols];
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                newArray[i][j] = array[i][j];
+            }
+        }
+
+        return newArray;
+    }
+
 
     public static void main(String[] args) {
         String filePath = new File("").getAbsolutePath();
         String path_to_data = filePath.concat(RELATIVE_FILE_PATH);
         System.out.println(path_to_data);
+        LinearRegression linReg = new LinearRegression(0.00001, 2000);
+        double[] linRegOutputs;
+
+        int[][] inputs;
+        int[] labels;
 
         int[][] matrix = aids_data_parser(path_to_data);
 //        categorize_features(matrix);
@@ -288,23 +320,33 @@ public class Main {
 
 //        remove_numeric_features(matrix, "removed_numeric.csv");
 
-        int totalAttributes = matrix[0].length - 1;
-        ArrayList<Integer> attributes =
-                (IntStream.range(0, totalAttributes))
-                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
-        ArrayList<Integer> allRows = getAllRows(matrix);
-        System.out.println(allRows);
-        System.out.println(attributes);
+        // do linear regression
+        inputs = removeLastColumn(matrix);
+        labels = getLastColumn(matrix);
+        linReg.fit(inputs, labels);
+        linRegOutputs = linReg.predictAll(inputs);
+        System.out.println(linReg.mse(labels, linRegOutputs));
+        System.out.println(linReg);
 
 
-        DecisionTree tree = new DecisionTree(matrix);
-        TreeNode decisionTree = new TreeNode(-1, -1, new ArrayList<TreeNode>(), -1);
-        tree.printDecisionTree(matrix, attributes, allRows, 0, 100, decisionTree);
-        ArrayList<Integer> features_to_predict = new ArrayList<Integer>(
-                Arrays.asList(7,0,3,1,0,1,0,100,0,0,1,0,1,0,1,0,0,1,6,3,7,6)
-        );
 
-        System.out.println("DONE WITH TRAINING");
-        System.out.println(predictLabel(decisionTree, features_to_predict));
+//        int totalAttributes = matrix[0].length - 1;
+//        ArrayList<Integer> attributes =
+//                (IntStream.range(0, totalAttributes))
+//                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+//        ArrayList<Integer> allRows = getAllRows(matrix);
+//        System.out.println(allRows);
+//        System.out.println(attributes);
+//
+//
+//        DecisionTree tree = new DecisionTree(matrix);
+//        TreeNode decisionTree = new TreeNode(-1, -1, new ArrayList<TreeNode>(), -1);
+//        tree.printDecisionTree(matrix, attributes, allRows, 0, 100, decisionTree);
+//        ArrayList<Integer> features_to_predict = new ArrayList<Integer>(
+//                Arrays.asList(7,0,3,1,0,1,0,100,0,0,1,0,1,0,1,0,0,1,6,3,7,6)
+//        );
+//
+//        System.out.println("DONE WITH TRAINING");
+//        System.out.println(predictLabel(decisionTree, features_to_predict));
     }
 }

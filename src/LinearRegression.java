@@ -12,14 +12,7 @@ public class LinearRegression {
     }
 
     // Fit the model to the data
-    public double[] fit(int[][] intInputs, int[] intExpectedOutputs) {
-        // convert parameter lists to doubles
-        double[][] inputs = Arrays.stream(intInputs)
-                                    .map(row -> Arrays.stream(row)
-                                            .asDoubleStream()
-                                            .toArray())
-                                    .toArray(double[][]::new);
-        double[] expectedOutputs = Arrays.stream(intExpectedOutputs).asDoubleStream().toArray();
+    public double[] fit(int[][] inputs, int[] expectedOutputs) {
 
 
         int numFeatures = inputs[0].length;
@@ -39,7 +32,7 @@ public class LinearRegression {
 
             // go to each sample
             for (int j = 0; j < numSamples; j++) {
-                double[] inputVector = inputs[j];
+                int[] inputVector = inputs[j];
                 double expectedOutput = expectedOutputs[j];
                 double prediction = predict(inputVector);
                 double error = prediction - expectedOutput;
@@ -70,22 +63,31 @@ public class LinearRegression {
     }
 
     // Make a prediction based on current weights and bias
-    public double predict(double[] inputVector) {
+    public double predict(int[] inputVector) {
         double prediction = 0.0;
         for (int i = 0; i < inputVector.length; i++) {
-            prediction += inputVector[i] * weights[i];
+            prediction += (double) (inputVector[i]) * weights[i];
         }
         prediction += bias;
         return prediction;
     }
 
+    // Make predictions for entire set of data
+    public double[] predictAll(int[][] inputs) {
+        double[] predictions = new double[inputs.length];
+        for (int i = 0; i < inputs.length; i++) {
+            predictions[i] = predict(inputs[i]);
+        }
+        return predictions;
+    }
+
     // Calculate mean squared error between actual and predicted values
-    public double mse(double[] actualOutputs, double[] predictedOutputs) {
+    public double mse(int[] actualOutputs, double[] predictedOutputs) {
         int n = actualOutputs.length;
         double sumSquaredError = 0.0;
 
         for (int i = 0; i < n; i++) {
-            double error = actualOutputs[i] - predictedOutputs[i];
+            double error = (double)(actualOutputs[i]) - predictedOutputs[i];
             sumSquaredError += error * error;
         }
 
