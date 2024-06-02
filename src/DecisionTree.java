@@ -3,6 +3,7 @@ import java.util.*;
 public class DecisionTree {
 
     public int[][] matrix;
+    public TreeNode decisionTree = new TreeNode(-1, -1, new ArrayList<TreeNode>(), -1);
 //    private final int LABEL_COLUMN = 22;
     public DecisionTree(int[][] matrix) {
         this.matrix = matrix;
@@ -138,6 +139,29 @@ public class DecisionTree {
             valToRowMapping.put(val, findRows(attribute, val, rows));
         }
         return valToRowMapping;
+    }
+
+    public TreeNode getDecisionTree() {
+        return this.decisionTree;
+    }
+
+    public int predictLabel(ArrayList<Integer> featureValues) {
+        // return either 0 or 1 for label
+        TreeNode currNode = this.decisionTree;
+        while (currNode.getPaths() != null) {
+            // find the current path and go through the path iteratively
+            for (TreeNode node : currNode.getPaths()) {
+                if (node.is_leaf()) {
+                    currNode = node;
+                    break;
+                }
+                if (featureValues.get(node.getFeatureIdx()) ==  node.getFeatureVal()) {
+                    currNode = node;
+                    break;
+                }
+            }
+        }
+        return currNode.getLabel();
     }
 
     public void printDecisionTree(int[][] data,

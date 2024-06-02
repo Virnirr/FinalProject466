@@ -288,22 +288,27 @@ public class Main {
 
 //        remove_numeric_features(matrix, "removed_numeric.csv");
 
-        int totalAttributes = matrix[0].length - 1;
-        ArrayList<Integer> attributes =
-                (IntStream.range(0, totalAttributes))
-                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
-        ArrayList<Integer> allRows = getAllRows(matrix);
-        System.out.println(allRows);
-        System.out.println(attributes);
-
-        DecisionTree tree = new DecisionTree(matrix);
-        TreeNode decisionTree = new TreeNode(-1, -1, new ArrayList<TreeNode>(), -1);
-        tree.printDecisionTree(matrix, attributes, allRows, 0, 100, decisionTree);
+//        int totalAttributes = matrix[0].length - 1;
+//        ArrayList<Integer> attributes =
+//                (IntStream.range(0, totalAttributes))
+//                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+//        ArrayList<Integer> allRows = getAllRows(matrix);
+//        System.out.println(allRows);
+//        System.out.println(attributes);
+//
+//        DecisionTree tree = new DecisionTree(matrix);
+//        TreeNode decisionTree = new TreeNode(-1, -1, new ArrayList<TreeNode>(), -1);
+//        tree.printDecisionTree(matrix, attributes, allRows, 0, 100, decisionTree);
         ArrayList<Integer> features_to_predict = new ArrayList<Integer>(
-                Arrays.asList(7,3,5,4,1,0,0,100,0,0,1,0,1,0,1,0,1,0,9,9,4,1)
+                Arrays.asList(1,0,4,5,0,1,0,100,0,1,7,0,1,1,3,1,0,0,1,1,8,6)
         );
+//
+//        System.out.println("DONE WITH TRAINING");
+//        System.out.println(predictLabel(decisionTree, features_to_predict));
 
-        System.out.println("DONE WITH TRAINING");
-        System.out.println(predictLabel(decisionTree, features_to_predict));
+        RandomForest forest = new RandomForest(5, 2000);
+        forest.train(matrix);
+
+        System.out.println(forest.prediction_list(features_to_predict));
     }
 }
