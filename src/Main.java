@@ -91,51 +91,6 @@ public class Main {
         return normalizedData;
     }
 
-//    public static void categorizeFeature(int[][] data, ArrayList<Integer> category) {
-//        for (int featureIdx : category) {
-//            TreeSet<Integer> sortedFeature = new TreeSet<>();
-//            for (int[] row : data) {
-//                sortedFeature.add(row[featureIdx]);
-//            }
-//
-//            int n = sortedFeature.size();
-//            int[] boundaries = new int[10];
-//            int step = (int) Math.ceil((double) n / 10);
-//            for (int i = 0; i < 9; i++) {
-//                boundaries[i] = (i + 1) * step;
-//            }
-//            boundaries[9] = n;
-//
-//            ArrayList<HashSet<Integer>> categoryValues = new ArrayList<>();
-//            for (int i = 0; i < 10; i++) {
-//                categoryValues.add(new HashSet<>());
-//            }
-//
-//            int index = 0;
-//            for (int value : sortedFeature) {
-//                int categoryIndex = Arrays.binarySearch(boundaries, index);
-//                if (categoryIndex < 0) {
-//                    categoryIndex = -categoryIndex - 2;
-//                }
-//                categoryValues.get(categoryIndex).add(value);
-//                index++;
-//            }
-//
-//            for (int[] row : data) {
-//                int value = row[featureIdx];
-//                for (int i = 0; i < 10; i++) {
-//                    if (categoryValues.get(i).contains(value)) {
-//                        row[featureIdx] = i + 1;
-//                        break;
-//                    }
-//                }
-//            }
-//        }
-//    }
-
-
-
-
     public static void categorizeFeature(int[][] data, ArrayList<Integer> category) {
 
         for (int feature_idx : category) {
@@ -252,25 +207,6 @@ public class Main {
         }
 
 //        System.out.println(Arrays.deepToString(matrix));
-    }
-
-    public static int predictLabel(TreeNode tree, ArrayList<Integer> featureValues) {
-        // return either 0 or 1 for label
-        TreeNode currNode = tree;
-        while (currNode.getPaths() != null) {
-            // find the current path and go through the path iteratively
-            for (TreeNode node : currNode.getPaths()) {
-                if (node.is_leaf()) {
-                    currNode = node;
-                    break;
-                }
-                if (featureValues.get(node.getFeatureIdx()) ==  node.getFeatureVal()) {
-                    currNode = node;
-                    break;
-                }
-            }
-        }
-        return currNode.getLabel();
     }
 
     public static int[] getLastColumn(int[][] matrix) {

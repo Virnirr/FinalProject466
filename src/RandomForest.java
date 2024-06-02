@@ -7,18 +7,7 @@ import java.util.stream.IntStream;
 public class RandomForest {
     private int n_base_learner;
     private int bootstrap_size;
-    private int max_depth;
-    private int min_samples_leaf;
-    private int min_information_gain;
-    private int num_of_features_splitting;
     private final ArrayList<DecisionTree> forest = new ArrayList<>();
-    // hyperparameters:
-    /*
-    n_base_learner
-    num_of_features_splitting
-    bootstrap_sample_size
-    max_depth, min_samples_leaf, min_information_gain
-     */
     public RandomForest(int n_base_learner,
                         int bootstrap_size) {
         this.n_base_learner = n_base_learner;
