@@ -386,13 +386,13 @@ public class Main {
 //        TreeNode decisionTree = new TreeNode(-1, -1, new ArrayList<TreeNode>(), -1);
 //        tree.printDecisionTree(matrix, attributes, allRows, 0, 100, decisionTree);
         ArrayList<Integer> features_to_predict = new ArrayList<Integer>(
-                Arrays.asList(1,0,4,5,0,1,0,100,0,1,7,0,1,1,3,1,0,0,1,1,8,6)
+                Arrays.asList(4,1,2,6,0,0,0,100,0,0,1,0,0,0,1,0,1,1,5,7,1,1)
         );
 //
 //        System.out.println("DONE WITH TRAINING");
 //        System.out.println(predictLabel(decisionTree, features_to_predict));
 
-        RandomForest forest = new RandomForest(2, 2000);
+        RandomForest forest = new RandomForest(20, 500);
         forest.train(matrix);
 
         System.out.println(forest.prediction_list(features_to_predict));

@@ -53,30 +53,30 @@ public class RandomForest {
     public void train(int[][] data) {
         // Trains the model with given X features and Y labels in the datasets
         int totalAttributes = data[0].length - 1;
-        ArrayList<Integer> attributes =
-                (IntStream.range(0, totalAttributes))
-                        .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
 
         ArrayList<ArrayList<Integer>> bootstrap_sample = this.create_bootstrap_samples(data);
 
         System.out.println(bootstrap_sample);
         System.out.println("this is the bootstrap size %d".formatted(bootstrap_sample.size()));
 
-        // learn base_learner number of Decision Trees
+
+        // Learn base_learner number of Decision Trees
         for (int base_learner_idx = 0; base_learner_idx < this.n_base_learner; base_learner_idx++){
             DecisionTree base_learner = new DecisionTree(data);
-
-            System.out.println(base_learner);
+            TreeNode currNode = base_learner.getDecisionTree();
+            ArrayList<Integer> attributes =
+                    (IntStream.range(0, totalAttributes))
+                            .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
 
             base_learner.printDecisionTree(
                     data,
                     attributes, // all attributes
-                    bootstrap_sample.get(base_learner_idx), // bootstrap rows (random)
+                    bootstrap_sample.get(base_learner_idx), // corresponding bootstrap rows (random)
                     0,
                     100,
-                    base_learner.getDecisionTree());
-            // add the random tree into forest
-            forest.add(base_learner);
+                    currNode);
+            // Add the random tree into forest
+            this.forest.add(base_learner);
         }
     }
     public int prediction_list(ArrayList<Integer> features_to_predict) {
