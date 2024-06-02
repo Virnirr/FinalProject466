@@ -65,6 +65,7 @@ public class RandomForest {
         // learn base_learner number of Decision Trees
         for (int base_learner_idx = 0; base_learner_idx < this.n_base_learner; base_learner_idx++){
             DecisionTree base_learner = new DecisionTree(data);
+            TreeNode currNode = base_learner.getDecisionTree();
 
             System.out.println(base_learner);
 
@@ -74,7 +75,7 @@ public class RandomForest {
                     bootstrap_sample.get(base_learner_idx), // bootstrap rows (random)
                     0,
                     100,
-                    base_learner.getDecisionTree());
+                    currNode);
             // add the random tree into forest
             forest.add(base_learner);
         }
