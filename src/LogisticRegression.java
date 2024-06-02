@@ -84,6 +84,30 @@ public class LogisticRegression {
     }
 
 
+    // Calculate mean squared error between actual and predicted values
+    public double mse(double[] actualOutputs, double[] predictedOutputs) {
+        int n = actualOutputs.length;
+        double sumSquaredError = 0.0;
+
+        for (int i = 0; i < n; i++) {
+            double error = actualOutputs[i] - predictedOutputs[i];
+            sumSquaredError += error * error;
+        }
+
+        return sumSquaredError / n;
+    }
+
+    @Override
+    public String toString() {
+        return "LogisticRegression(" +
+                "learningRate = " + learningRate + ",\n" +
+                "numIterations = " + numIterations + ",\n" +
+                "weights = " + Arrays.toString(weights) + ",\n" +
+                "bias = " + bias +
+                ")";
+    }
+
+
     public static class Main {
         public static void main(String[] args) {
             // Example data for prediction
