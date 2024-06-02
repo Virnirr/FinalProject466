@@ -304,9 +304,8 @@ public class Main {
         String filePath = new File("").getAbsolutePath();
         String path_to_data = filePath.concat(RELATIVE_FILE_PATH);
         System.out.println(path_to_data);
-        LinearRegression linReg = new LinearRegression(0.00001, 2000);
+        LinearRegression linReg = new LinearRegression(0.0001, 10000);
         double[] linRegOutputs;
-
         int[][] inputs;
         int[] labels;
 
@@ -327,7 +326,6 @@ public class Main {
         linRegOutputs = linReg.predictAll(inputs);
         System.out.println(linReg.mse(labels, linRegOutputs));
         System.out.println(linReg);
-
 
 
 //        int totalAttributes = matrix[0].length - 1;
