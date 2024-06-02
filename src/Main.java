@@ -308,8 +308,16 @@ public class Main {
         double[] linRegOutputs;
         int[][] inputs;
         int[] labels;
-
         int[][] matrix = aids_data_parser(path_to_data);
+
+        // // do linear regression
+        // inputs = removeLastColumn(matrix);
+        // labels = getLastColumn(matrix);
+        // linReg.fit(inputs, labels);
+        // linRegOutputs = linReg.predictAll(inputs);
+        // System.out.println(linReg.mse(labels, linRegOutputs));
+        // System.out.println(linReg);
+
 //        categorize_features(matrix);
 //        System.out.println(Arrays.deepToString(normalizeData(matrix)));
 
@@ -319,15 +327,6 @@ public class Main {
 
 //        remove_numeric_features(matrix, "removed_numeric.csv");
 
-        // do linear regression
-        inputs = removeLastColumn(matrix);
-        labels = getLastColumn(matrix);
-        linReg.fit(inputs, labels);
-        linRegOutputs = linReg.predictAll(inputs);
-        System.out.println(linReg.mse(labels, linRegOutputs));
-        System.out.println(linReg);
-
-
 //        int totalAttributes = matrix[0].length - 1;
 //        ArrayList<Integer> attributes =
 //                (IntStream.range(0, totalAttributes))
@@ -336,15 +335,19 @@ public class Main {
 //        System.out.println(allRows);
 //        System.out.println(attributes);
 //
-//
 //        DecisionTree tree = new DecisionTree(matrix);
 //        TreeNode decisionTree = new TreeNode(-1, -1, new ArrayList<TreeNode>(), -1);
 //        tree.printDecisionTree(matrix, attributes, allRows, 0, 100, decisionTree);
-//        ArrayList<Integer> features_to_predict = new ArrayList<Integer>(
-//                Arrays.asList(7,0,3,1,0,1,0,100,0,0,1,0,1,0,1,0,0,1,6,3,7,6)
-//        );
+        ArrayList<Integer> features_to_predict = new ArrayList<Integer>(
+                Arrays.asList(1,0,4,5,0,1,0,100,0,1,7,0,1,1,3,1,0,0,1,1,8,6)
+        );
 //
 //        System.out.println("DONE WITH TRAINING");
 //        System.out.println(predictLabel(decisionTree, features_to_predict));
+
+        RandomForest forest = new RandomForest(5, 2000);
+        forest.train(matrix);
+
+        System.out.println(forest.prediction_list(features_to_predict));
     }
 }
