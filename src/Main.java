@@ -299,24 +299,71 @@ public class Main {
         return newArray;
     }
 
+    public static Regression doRegression(int[][] matrix, boolean linearLogFlag, boolean isTraining, double learningRate, int numIterations, Regression oldRegression){
+        double[] outputs;
+        int[][] inputs;
+        int[] labels;
+        Regression regression;
+
+        // use old regression (so i can re-run with test set and old weights)
+        if(!isTraining){
+            regression = oldRegression;
+        // use linear or logistic
+        } else if (linearLogFlag){
+            regression = new LinearRegression(learningRate, numIterations);
+        } else {
+            regression = new LogisticRegression(learningRate, numIterations);
+        }
+
+        // get inputs and labels
+        inputs = removeLastColumn(matrix);
+        labels = getLastColumn(matrix);
+
+        // train (don't do this for testing set)
+        if (isTraining) {
+            regression.fit(inputs, labels);
+        }
+
+        // print mse and weights and stuff
+        outputs = regression.predictAll(inputs);
+        System.out.println(regression.mse(labels, outputs));
+        System.out.println(regression);
+
+        return regression;
+    }
+
 
     public static void main(String[] args) {
         String filePath = new File("").getAbsolutePath();
         String path_to_data = filePath.concat(RELATIVE_FILE_PATH);
         System.out.println(path_to_data);
-        LinearRegression linReg = new LinearRegression(0.0001, 10000);
-        double[] linRegOutputs;
-        int[][] inputs;
-        int[] labels;
         int[][] matrix = aids_data_parser(path_to_data);
+        int[][] matrixTrain;
+        int[][] matrixTest;
+        Regression regressionObj;
 
-        // // do linear regression
-        // inputs = removeLastColumn(matrix);
-        // labels = getLastColumn(matrix);
-        // linReg.fit(inputs, labels);
-        // linRegOutputs = linReg.predictAll(inputs);
-        // System.out.println(linReg.mse(labels, linRegOutputs));
-        // System.out.println(linReg);
+        List<int[]> listMatrix = new ArrayList<>(Arrays.asList(matrix));
+        Collections.shuffle(listMatrix, new Random());
+        int splitIndex = (int) (listMatrix.size() * 0.8);
+
+        matrixTrain = listMatrix.subList(0, splitIndex).toArray(new int[0][]);
+        matrixTest = listMatrix.subList(splitIndex, listMatrix.size()).toArray(new int[0][]);
+
+
+
+
+        // linear, train
+        System.out.println("\nlinear, train");
+        regressionObj = doRegression(matrixTrain, true, true, 0.0001, 10000, null);
+        // linear, test
+        System.out.println("\nlinear, test");
+        doRegression(matrixTest, true, false, 0.0001, 10000, regressionObj);
+        // logistic, train
+        System.out.println("\nLogistic, train");
+        regressionObj = doRegression(matrixTrain, false, true, 0.001, 2000, null);
+        // logistic, test
+        System.out.println("\nLogistic, test");
+        doRegression(matrixTest, false, false, 0.001, 2000, regressionObj);
 
 //        categorize_features(matrix);
 //        System.out.println(Arrays.deepToString(normalizeData(matrix)));
@@ -345,7 +392,7 @@ public class Main {
 //        System.out.println("DONE WITH TRAINING");
 //        System.out.println(predictLabel(decisionTree, features_to_predict));
 
-        RandomForest forest = new RandomForest(5, 2000);
+        RandomForest forest = new RandomForest(2, 2000);
         forest.train(matrix);
 
         System.out.println(forest.prediction_list(features_to_predict));

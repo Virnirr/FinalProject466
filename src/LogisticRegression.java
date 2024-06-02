@@ -1,26 +1,14 @@
 import java.util.Arrays;
 
-public class LogisticRegression {
-    private double learningRate;
-    private int numIterations;
-    private double[] weights;
-    private double bias;
+public class LogisticRegression extends Regression{
 
     // Constructor to initialize learning rate and number of iterations
     public LogisticRegression(double learningRate, int numIterations) {
-        this.learningRate = learningRate;
-        this.numIterations = numIterations;
+        super(learningRate, numIterations);
     }
 
     // Fit the model to the data
-    public double[] fit(int[][] intInputs, int[] intExpectedOutputs) {
-        // Convert integer inputs and expected outputs to double
-        double[][] inputs = Arrays.stream(intInputs)
-                .map(row -> Arrays.stream(row)
-                        .asDoubleStream()
-                        .toArray())
-                .toArray(double[][]::new);
-        double[] expectedOutputs = Arrays.stream(intExpectedOutputs).asDoubleStream().toArray();
+    public double[] fit(int[][] inputs, int[] expectedOutputs) {
 
         int numFeatures = inputs[0].length; // Number of features
         int numSamples = inputs.length; // Number of samples
@@ -38,7 +26,7 @@ public class LogisticRegression {
 
             // Loop through each sample
             for (int j = 0; j < numSamples; j++) {
-                double[] inputVector = inputs[j];
+                int[] inputVector = inputs[j];
                 double expectedOutput = expectedOutputs[j];
                 double prediction = predict(inputVector);
                 double error = prediction - expectedOutput;
@@ -72,39 +60,15 @@ public class LogisticRegression {
     private double sigmoid(double x) {
         return 1 / (1 + Math.exp(-x));
     }
+
     // Make a prediction based on current weights and bias using the sigmoid function
-    public double predict(double[] inputVector) {
-        double predict = 0.0;
-        for (int i = 0; i < inputVector.length; i++) {
-            predict += inputVector[i] * weights[i];
-        }
-        predict += bias;
-        return sigmoid(predict); // Sigmoid Function for classification
-
-    }
-
-
-    // Calculate mean squared error between actual and predicted values
-    public double mse(double[] actualOutputs, double[] predictedOutputs) {
-        int n = actualOutputs.length;
-        double sumSquaredError = 0.0;
-
-        for (int i = 0; i < n; i++) {
-            double error = actualOutputs[i] - predictedOutputs[i];
-            sumSquaredError += error * error;
-        }
-
-        return sumSquaredError / n;
+    public double predict(int[] inputVector) {
+        return sigmoid(super.predict(inputVector)); // Sigmoid Function for classification
     }
 
     @Override
     public String toString() {
-        return "LogisticRegression(" +
-                "learningRate = " + learningRate + ",\n" +
-                "numIterations = " + numIterations + ",\n" +
-                "weights = " + Arrays.toString(weights) + ",\n" +
-                "bias = " + bias +
-                ")";
+        return "LogisticRegression" + super.toString();
     }
 
 

@@ -1,20 +1,13 @@
 import java.util.Arrays;
 
-public class LinearRegression {
-    private double learningRate;
-    private int numIterations;
-    private double[] weights;
-    private double bias;
+public class LinearRegression extends Regression {
 
     public LinearRegression(double learningRate, int numIterations) {
-        this.learningRate = learningRate;
-        this.numIterations = numIterations;
+        super(learningRate, numIterations);
     }
 
     // Fit the model to the data
     public double[] fit(int[][] inputs, int[] expectedOutputs) {
-
-
         int numFeatures = inputs[0].length;
         int numSamples = inputs.length;
 
@@ -62,45 +55,8 @@ public class LinearRegression {
         return result;
     }
 
-    // Make a prediction based on current weights and bias
-    public double predict(int[] inputVector) {
-        double prediction = 0.0;
-        for (int i = 0; i < inputVector.length; i++) {
-            prediction += (double) (inputVector[i]) * weights[i];
-        }
-        prediction += bias;
-        return prediction;
-    }
-
-    // Make predictions for entire set of data
-    public double[] predictAll(int[][] inputs) {
-        double[] predictions = new double[inputs.length];
-        for (int i = 0; i < inputs.length; i++) {
-            predictions[i] = predict(inputs[i]);
-        }
-        return predictions;
-    }
-
-    // Calculate mean squared error between actual and predicted values
-    public double mse(int[] actualOutputs, double[] predictedOutputs) {
-        int n = actualOutputs.length;
-        double sumSquaredError = 0.0;
-
-        for (int i = 0; i < n; i++) {
-            double error = (double)(actualOutputs[i]) - predictedOutputs[i];
-            sumSquaredError += error * error;
-        }
-
-        return sumSquaredError / n;
-    }
-
     @Override
     public String toString() {
-        return "LinearRegression(" +
-                "learningRate = " + learningRate + ",\n" +
-                "numIterations = " + numIterations + ",\n" +
-                "weights = " + Arrays.toString(weights) + ",\n" +
-                "bias = " + bias +
-                ")";
+        return "LinearRegression" + super.toString();
     }
 }
