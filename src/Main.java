@@ -336,10 +336,6 @@ public class Main {
 
         matrixTrain = listMatrix.subList(0, splitIndex).toArray(new int[0][]);
         matrixTest = listMatrix.subList(splitIndex, listMatrix.size()).toArray(new int[0][]);
-        ArrayList<ArrayList<Integer>> splitSet = splitData(matrix);
-        System.out.println(splitSet);
-        System.out.println(splitSet.get(0).size());
-        System.out.println(splitSet.get(1).size());
 
 
         // linear, train
