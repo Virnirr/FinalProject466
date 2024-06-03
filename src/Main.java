@@ -268,23 +268,37 @@ public class Main {
         return regression;
     }
 
-    public int[][] computeConfusionMatrix(int[][] data, ArrayList<ArrayList<Integer>> dataSet, RandomForest forest) {
-        ArrayList<Integer> features_to_predict = new ArrayList<Integer>(
-                Arrays.asList(4,1,2,6,0,0,0,100,0,0,1,0,0,0,1,0,1,1,5,7,1,1)
-        );
+    public int[][] computeConfusionMatrix(int[][] data,
+                                          int[][] testingSet,
+                                          RandomForest forest) {
 
         int [][] confusionMatrix = new int[2][2];
         int TP = 0;
         int FN = 0;
         int FP = 0;
         int TN = 0;
+        Arrays.copyOfRange(data[i], 0, data[0].length - 1);
 
-        ArrayList<Integer> trainingSet = dataSet.get(0);
-        ArrayList<Integer> testingSEt = dataSet.get(1);
+        for (int i = 0; i < testingSet.length; i++) {
+            int[] primitiveArray = Arrays.copyOfRange(data[i], 0, data[0].length - 1);
+            Integer[] objectArray = Arrays.stream(primitiveArray).boxed().toArray(Integer[]::new);
+            ArrayList<Integer> features_to_predict = new ArrayList<>(Arrays.asList(objectArray));
 
-        for (int i = 0; i < trainingSet.size(); i++) {
+            int predictedCategory = forest.prediction_list(features_to_predict);
+            int actualCategory = data[i][data.length - 1];
 
-            forest.prediction_list(trainingSet.get(i));
+            if (actualCategory == 1 && predictedCategory == 1) {
+                TP++;
+            }
+            else if (actualCategory == 0 && predictedCategory == 1) {
+                FP++;
+            }
+            else if (actualCategory == 1 && predictedCategory == 0) {
+                FN++;
+            }
+            else if (actualCategory == 0 && predictedCategory == 0) {
+                TN++;
+            }
         }
 
         confusionMatrix[0][0] = TP;
