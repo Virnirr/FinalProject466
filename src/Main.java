@@ -263,7 +263,8 @@ public class Main {
         // print mse and weights and stuff
         outputs = regression.predictAll(inputs);
         System.out.println(regression.mse(labels, outputs));
-        System.out.println(regression);
+        System.out.println(regression.bce(labels, outputs));
+        System.out.println(regression); // prints weights and bias
 
         return regression;
     }

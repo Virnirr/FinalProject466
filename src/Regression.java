@@ -45,6 +45,22 @@ public abstract class Regression {
         return sumSquaredError / n;
     }
 
+    // calcualte binary cross entropy loss
+    public double bce(int[] actualOutputs, double[] predictedOutputs){
+        int n = actualOutputs.length;
+        double sumError = 0.0;
+
+        // basically just do a log loss for each thin
+        for (int i = 0; i < n; i++){
+            double y = (double) actualOutputs[i];
+            double p = predictedOutputs[i];
+            sumError += -1*((y*Math.log(p)) + (1-y)*Math.log(1-p));
+        }
+
+        return sumError;
+    }
+
+
     @Override
     public String toString() {
         return  "(" +
