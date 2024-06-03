@@ -183,7 +183,7 @@ public class Main {
         }
     }
 
-    public static void categorize_features(int [][] matrix) {
+    public static void categorize_to_file(int [][] matrix) {
         categorizeFeature(matrix, new ArrayList<Integer>(Arrays.asList(0, 2, 3, 10, 18, 19 , 20, 21)));
         String csvFile = "output.csv";
 
