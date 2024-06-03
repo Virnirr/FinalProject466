@@ -268,6 +268,58 @@ public class Main {
         return regression;
     }
 
+    public int[][] computeConfusionMatrix(int[][] data, ArrayList<ArrayList<Integer>> dataSet, RandomForest forest) {
+        ArrayList<Integer> features_to_predict = new ArrayList<Integer>(
+                Arrays.asList(4,1,2,6,0,0,0,100,0,0,1,0,0,0,1,0,1,1,5,7,1,1)
+        );
+
+        int [][] confusionMatrix = new int[2][2];
+        int TP = 0;
+        int FN = 0;
+        int FP = 0;
+        int TN = 0;
+
+        ArrayList<Integer> trainingSet = dataSet.get(0);
+        ArrayList<Integer> testingSEt = dataSet.get(1);
+
+        for (int i = 0; i < trainingSet.size(); i++) {
+
+            forest.prediction_list(trainingSet.get(i));
+        }
+
+        confusionMatrix[0][0] = TP;
+        confusionMatrix[0][1] = FN;
+        confusionMatrix[1][0] = FP;
+        confusionMatrix[1][1] = TN;
+
+        return confusionMatrix;
+    }
+
+    public double compute_precision(int [][] confusionMatrix) {
+        int TP = confusionMatrix[0][0];
+        int FP = confusionMatrix[1][0];
+        int FN = confusionMatrix[0][1];
+        int TN = confusionMatrix[1][1];
+
+        return (double) TP / (TP + FP);
+    }
+    public double compute_recall(int[][] confusionMatrix) {
+        int TP = confusionMatrix[0][0];
+        int FP = confusionMatrix[1][0];
+        int FN = confusionMatrix[0][1];
+        int TN = confusionMatrix[1][1];
+
+        return (double) TP / (TP + FN);
+    }
+    public double compute_f1_score(int[][] data, ArrayList<ArrayList<Integer>> dataSet, RandomForest forest) {
+        int[][] confusionMatrix = computeConfusionMatrix(data, dataSet, forest);
+
+        double precision = compute_precision(confusionMatrix);
+        double recall = compute_recall(confusionMatrix);
+
+        return 1 * precision * recall / (precision + recall);
+    }
+
 
     public static void main(String[] args) {
         String filePath = new File("").getAbsolutePath();
@@ -284,22 +336,24 @@ public class Main {
 
         matrixTrain = listMatrix.subList(0, splitIndex).toArray(new int[0][]);
         matrixTest = listMatrix.subList(splitIndex, listMatrix.size()).toArray(new int[0][]);
-
-
+        ArrayList<ArrayList<Integer>> splitSet = splitData(matrix);
+        System.out.println(splitSet);
+        System.out.println(splitSet.get(0).size());
+        System.out.println(splitSet.get(1).size());
 
 
         // linear, train
-        System.out.println("\nlinear, train");
-        regressionObj = doRegression(matrixTrain, true, true, 0.0001, 10000, null);
-        // linear, test
-        System.out.println("\nlinear, test");
-        doRegression(matrixTest, true, false, 0.0001, 10000, regressionObj);
-        // logistic, train
-        System.out.println("\nLogistic, train");
-        regressionObj = doRegression(matrixTrain, false, true, 0.001, 2000, null);
-        // logistic, test
-        System.out.println("\nLogistic, test");
-        doRegression(matrixTest, false, false, 0.001, 2000, regressionObj);
+//        System.out.println("\nlinear, train");
+//        regressionObj = doRegression(matrixTrain, true, true, 0.0001, 10000, null);
+//        // linear, test
+//        System.out.println("\nlinear, test");
+//        doRegression(matrixTest, true, false, 0.0001, 10000, regressionObj);
+//        // logistic, train
+//        System.out.println("\nLogistic, train");
+//        regressionObj = doRegression(matrixTrain, false, true, 0.001, 2000, null);
+//        // logistic, test
+//        System.out.println("\nLogistic, test");
+//        doRegression(matrixTest, false, false, 0.001, 2000, regressionObj);
 
 //        categorize_features(matrix);
 //        System.out.println(Arrays.deepToString(normalizeData(matrix)));
@@ -321,16 +375,16 @@ public class Main {
 //        DecisionTree tree = new DecisionTree(matrix);
 //        TreeNode decisionTree = new TreeNode(-1, -1, new ArrayList<TreeNode>(), -1);
 //        tree.printDecisionTree(matrix, attributes, allRows, 0, 100, decisionTree);
-        ArrayList<Integer> features_to_predict = new ArrayList<Integer>(
-                Arrays.asList(4,1,2,6,0,0,0,100,0,0,1,0,0,0,1,0,1,1,5,7,1,1)
-        );
+//        ArrayList<Integer> features_to_predict = new ArrayList<Integer>(
+//                Arrays.asList(4,1,2,6,0,0,0,100,0,0,1,0,0,0,1,0,1,1,5,7,1,1)
+//        );
+////
+////        System.out.println("DONE WITH TRAINING");
+////        System.out.println(predictLabel(decisionTree, features_to_predict));
 //
-//        System.out.println("DONE WITH TRAINING");
-//        System.out.println(predictLabel(decisionTree, features_to_predict));
-
-        RandomForest forest = new RandomForest(20, 500);
-        forest.train(matrix);
-
-        System.out.println(forest.prediction_list(features_to_predict));
+//        RandomForest forest = new RandomForest(20, 500);
+//        forest.train(matrix);
+//
+//        System.out.println(forest.prediction_list(features_to_predict));
     }
 }
