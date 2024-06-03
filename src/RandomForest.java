@@ -71,6 +71,7 @@ public class RandomForest {
     public int prediction_list(ArrayList<Integer> features_to_predict) {
         ArrayList<Integer> pred_prob_list = new ArrayList<>();
 
+        System.out.println(features_to_predict);
         for (DecisionTree tree : this.forest) {
             pred_prob_list.add(tree.predictLabel(features_to_predict));
         }

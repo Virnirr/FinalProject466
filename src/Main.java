@@ -381,7 +381,7 @@ public class Main {
 //
 
 
-        RandomForest forest = new RandomForest(20, 500);
+        RandomForest forest = new RandomForest(5, 2000);
         forest.train(matrixTrain);
 
 

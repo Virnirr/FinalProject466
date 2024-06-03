@@ -148,6 +148,7 @@ public class DecisionTree {
     public int predictLabel(ArrayList<Integer> featureValues) {
         // return either 0 or 1 for label
         TreeNode currNode = this.decisionTree;
+        int check_forever = 0;
         while (currNode.getPaths() != null) {
             // find the current path and go through the path iteratively
             for (TreeNode node : currNode.getPaths()) {
@@ -159,6 +160,10 @@ public class DecisionTree {
                     currNode = node;
                     break;
                 }
+            }
+            check_forever++;
+            if (check_forever > 100) {
+                return -1;
             }
         }
         return currNode.getLabel();
