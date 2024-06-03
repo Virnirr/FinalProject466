@@ -268,16 +268,15 @@ public class Main {
         return regression;
     }
 
-    public int[][] computeConfusionMatrix(int[][] data,
-                                          int[][] testingSet,
-                                          RandomForest forest) {
+    public static int[][] computeConfusionMatrix(int[][] data,
+                                                 int[][] testingSet,
+                                                 RandomForest forest) {
 
         int [][] confusionMatrix = new int[2][2];
         int TP = 0;
         int FN = 0;
         int FP = 0;
         int TN = 0;
-        Arrays.copyOfRange(data[i], 0, data[0].length - 1);
 
         for (int i = 0; i < testingSet.length; i++) {
             int[] primitiveArray = Arrays.copyOfRange(data[i], 0, data[0].length - 1);
@@ -285,7 +284,7 @@ public class Main {
             ArrayList<Integer> features_to_predict = new ArrayList<>(Arrays.asList(objectArray));
 
             int predictedCategory = forest.prediction_list(features_to_predict);
-            int actualCategory = data[i][data.length - 1];
+            int actualCategory = data[i][data[0].length - 1];
 
             if (actualCategory == 1 && predictedCategory == 1) {
                 TP++;
@@ -309,7 +308,7 @@ public class Main {
         return confusionMatrix;
     }
 
-    public double compute_precision(int [][] confusionMatrix) {
+    public static double compute_precision(int[][] confusionMatrix) {
         int TP = confusionMatrix[0][0];
         int FP = confusionMatrix[1][0];
         int FN = confusionMatrix[0][1];
@@ -317,7 +316,7 @@ public class Main {
 
         return (double) TP / (TP + FP);
     }
-    public double compute_recall(int[][] confusionMatrix) {
+    public static double compute_recall(int[][] confusionMatrix) {
         int TP = confusionMatrix[0][0];
         int FP = confusionMatrix[1][0];
         int FN = confusionMatrix[0][1];
@@ -325,16 +324,14 @@ public class Main {
 
         return (double) TP / (TP + FN);
     }
-    public double compute_f1_score(int[][] data, ArrayList<ArrayList<Integer>> dataSet, RandomForest forest) {
-        int[][] confusionMatrix = computeConfusionMatrix(data, dataSet, forest);
+    public static double compute_f1_score(int[][] data, int[][] testingData, RandomForest forest) {
+        int[][] confusionMatrix = computeConfusionMatrix(data, testingData, forest);
 
         double precision = compute_precision(confusionMatrix);
         double recall = compute_recall(confusionMatrix);
 
         return 1 * precision * recall / (precision + recall);
     }
-
-
     public static void main(String[] args) {
         String filePath = new File("").getAbsolutePath();
         String path_to_data = filePath.concat(RELATIVE_FILE_PATH);
@@ -382,19 +379,12 @@ public class Main {
 //        System.out.println(allRows);
 //        System.out.println(attributes);
 //
-//        DecisionTree tree = new DecisionTree(matrix);
-//        TreeNode decisionTree = new TreeNode(-1, -1, new ArrayList<TreeNode>(), -1);
-//        tree.printDecisionTree(matrix, attributes, allRows, 0, 100, decisionTree);
-//        ArrayList<Integer> features_to_predict = new ArrayList<Integer>(
-//                Arrays.asList(4,1,2,6,0,0,0,100,0,0,1,0,0,0,1,0,1,1,5,7,1,1)
-//        );
-////
-////        System.out.println("DONE WITH TRAINING");
-////        System.out.println(predictLabel(decisionTree, features_to_predict));
-//
-//        RandomForest forest = new RandomForest(20, 500);
-//        forest.train(matrix);
-//
-//        System.out.println(forest.prediction_list(features_to_predict));
+
+
+        RandomForest forest = new RandomForest(20, 500);
+        forest.train(matrixTrain);
+
+
+        System.out.println(compute_f1_score(matrix, matrixTest, forest));
     }
 }
