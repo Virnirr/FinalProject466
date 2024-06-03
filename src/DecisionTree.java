@@ -162,7 +162,7 @@ public class DecisionTree {
                 }
             }
             check_forever++;
-            if (check_forever > 100) {
+            if (check_forever > 1000) {
                 return -1;
             }
         }

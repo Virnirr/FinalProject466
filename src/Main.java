@@ -306,6 +306,11 @@ public class Main {
         confusionMatrix[1][0] = FP;
         confusionMatrix[1][1] = TN;
 
+        System.out.println("True Positive %d".formatted(TP));
+        System.out.println("False Positive %d".formatted(FP));
+        System.out.println("False Negative %d".formatted(FN));
+        System.out.println("True Negative %d".formatted(TN));
+
         return confusionMatrix;
     }
 
@@ -331,7 +336,11 @@ public class Main {
         double precision = compute_precision(confusionMatrix);
         double recall = compute_recall(confusionMatrix);
 
-        return 1 * precision * recall / (precision + recall);
+        System.out.println("Precision: %f".formatted(precision));
+        System.out.println("Recall: %f".formatted(recall));
+        System.out.println("F1 Score: %f".formatted((2 * precision * recall) / (precision + recall)));
+
+        return 2 * precision * recall / (precision + recall);
     }
     public static void main(String[] args) {
         String filePath = new File("").getAbsolutePath();
@@ -382,7 +391,7 @@ public class Main {
 //
 
 
-        RandomForest forest = new RandomForest(5, 2000);
+        RandomForest forest = new RandomForest(20, 1000);
         forest.train(matrixTrain);
 
 
