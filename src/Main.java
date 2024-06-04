@@ -351,9 +351,9 @@ public class Main {
         double precision = compute_precision(confusionMatrix);
         double recall = compute_recall(confusionMatrix);
 
-//        System.out.println("Precision: %f".formatted(precision));
-//        System.out.println("Recall: %f".formatted(recall));
-//        System.out.println("F1 Score: %f".formatted((2 * precision * recall) / (precision + recall)));
+        System.out.println("Precision: %f".formatted(precision));
+        System.out.println("Recall: %f".formatted(recall));
+        System.out.println("F1 Score: %f".formatted((2 * precision * recall) / (precision + recall)));
 
         return 2 * precision * recall / (precision + recall);
     }
@@ -397,18 +397,16 @@ public class Main {
         Collections.shuffle(listMatrix, new Random());
 
         int splitTraining = (int) (listMatrix.size() * 0.9);
-        int splitValidation = (int) (listMatrix.size() * 0.9);
 
         matrixTrain = listMatrix.subList(0, splitTraining).toArray(new int[0][]);
-        matrixValidation = listMatrix.subList(splitTraining, splitValidation).toArray(new int[0][]);
-        matrixTest = listMatrix.subList(splitValidation, listMatrix.size()).toArray(new int[0][]);
+        matrixTest = listMatrix.subList(splitTraining, listMatrix.size()).toArray(new int[0][]);
 
         // split into train and test lists for the normalized dataset
         List<double[]> normalizedListMatrix = new ArrayList<>(Arrays.asList(normalizedMatrix));
         Collections.shuffle(normalizedListMatrix, new Random());
 
         normalizedMatrixTrain = normalizedListMatrix.subList(0, splitTraining).toArray(new double[0][]);
-        normalizedMatrixTest = normalizedListMatrix.subList(splitValidation, normalizedListMatrix.size()).toArray(new double[0][]);
+        normalizedMatrixTest = normalizedListMatrix.subList(splitTraining, normalizedListMatrix.size()).toArray(new double[0][]);
 
 
         // linear, train
@@ -443,11 +441,12 @@ public class Main {
 //
 
 //        // hyper parameter tuning for random forest
-//        double maxF1Score = 0.0;
-//        int best_n_base_learner = 10;
-//        int best_bootstrap_size = 500;
-//        RandomForest forest =  new RandomForest(10, 500);
-//
+        double maxF1Score = 0.0;
+        int best_n_base_learner = 30;
+        int best_bootstrap_size = 600;
+        RandomForest forest =  new RandomForest(best_n_base_learner, best_bootstrap_size);
+        forest.train(matrixTrain);
+
 //        for (int cur_base_learner = best_n_base_learner; cur_base_learner < 100; cur_base_learner+=10) {
 //            for (int curr_boot_strap_size = best_bootstrap_size; curr_boot_strap_size < 2000; curr_boot_strap_size+=250) {
 //                forest = new RandomForest(cur_base_learner, curr_boot_strap_size);
@@ -460,10 +459,8 @@ public class Main {
 //                }
 //            }
 //        }
-//
-//        System.out.println(maxF1Score);
-//        System.out.println(compute_f1_score(matrix, matrixValidation, forest));
-//        System.out.println(best_n_base_learner);
-//        System.out.println(best_bootstrap_size);
+        System.out.println();
+        System.out.println("Random Forest Testing Results:");
+        compute_f1_score(matrix, matrixTest, forest);
     }
 }
