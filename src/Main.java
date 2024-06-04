@@ -406,9 +406,9 @@ public class Main {
         // split into train and test lists for the normalized dataset
         List<double[]> normalizedListMatrix = new ArrayList<>(Arrays.asList(normalizedMatrix));
         Collections.shuffle(normalizedListMatrix, new Random());
-        int splitIndex = (int) (normalizedListMatrix.size() * 0.8);
-        normalizedMatrixTrain = normalizedListMatrix.subList(0, splitIndex).toArray(new double[0][]);
-        normalizedMatrixTest = normalizedListMatrix.subList(splitIndex, normalizedListMatrix.size()).toArray(new double[0][]);
+
+        normalizedMatrixTrain = normalizedListMatrix.subList(0, splitTraining).toArray(new double[0][]);
+        normalizedMatrixTest = normalizedListMatrix.subList(splitValidation, normalizedListMatrix.size()).toArray(new double[0][]);
 
 
         // linear, train
