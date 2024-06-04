@@ -57,7 +57,7 @@ public abstract class Regression {
             sumError += -1*((y*Math.log(p)) + (1-y)*Math.log(1-p));
         }
 
-        return sumError;
+        return sumError / n;
     }
 
 

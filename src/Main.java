@@ -321,10 +321,10 @@ public class Main {
         confusionMatrix[1][0] = FP;
         confusionMatrix[1][1] = TN;
 
-//        System.out.println("True Positive %d".formatted(TP));
-//        System.out.println("False Positive %d".formatted(FP));
-//        System.out.println("False Negative %d".formatted(FN));
-//        System.out.println("True Negative %d".formatted(TN));
+        System.out.println("True Positive %d".formatted(TP));
+        System.out.println("False Positive %d".formatted(FP));
+        System.out.println("False Negative %d".formatted(FN));
+        System.out.println("True Negative %d".formatted(TN));
 
         return confusionMatrix;
     }
@@ -396,7 +396,7 @@ public class Main {
         List<int[]> listMatrix = new ArrayList<>(Arrays.asList(matrix));
         Collections.shuffle(listMatrix, new Random());
 
-        int splitTraining = (int) (listMatrix.size() * 0.7);
+        int splitTraining = (int) (listMatrix.size() * 0.9);
         int splitValidation = (int) (listMatrix.size() * 0.9);
 
         matrixTrain = listMatrix.subList(0, splitTraining).toArray(new int[0][]);
@@ -413,16 +413,16 @@ public class Main {
 
         // linear, train
         System.out.println("\nlinear, train");
-        regressionObj = doRegression(normalizedMatrixTrain, true, true, 0.0001, 10000, null);
+        regressionObj = doRegression(normalizedMatrixTrain, true, true, 0.2, 2000, null);
         // linear, test
         System.out.println("\nlinear, test");
-        doRegression(normalizedMatrixTest, true, false, 0.0001, 10000, regressionObj);
+        doRegression(normalizedMatrixTest, true, false, 0, 0, regressionObj);
         // logistic, train
         System.out.println("\nLogistic, train");
-        regressionObj = doRegression(normalizedMatrixTrain, false, true, 0.001, 2000, null);
+        regressionObj = doRegression(normalizedMatrixTrain, false, true, 0.01, 20000, null);
         // logistic, test
         System.out.println("\nLogistic, test");
-        doRegression(normalizedMatrixTest, false, false, 0.001, 2000, regressionObj);
+        doRegression(normalizedMatrixTest, false, false, 0, 0, regressionObj);
 
 //        categorize_features(matrix);
 //        System.out.println(Arrays.deepToString(normalizeData(matrix)));
@@ -442,28 +442,28 @@ public class Main {
 //        System.out.println(attributes);
 //
 
-        // hyper parameter tuning for random forest
-        double maxF1Score = 0.0;
-        int best_n_base_learner = 10;
-        int best_bootstrap_size = 500;
-        RandomForest forest =  new RandomForest(10, 500);
-
-        for (int cur_base_learner = best_n_base_learner; cur_base_learner < 100; cur_base_learner+=10) {
-            for (int curr_boot_strap_size = best_bootstrap_size; curr_boot_strap_size < 2000; curr_boot_strap_size+=250) {
-                forest = new RandomForest(cur_base_learner, curr_boot_strap_size);
-                forest.train(matrixTrain);
-                double f1_score = compute_f1_score(matrix, matrixValidation, forest);
-                if (f1_score > maxF1Score) {
-                    maxF1Score = f1_score;
-                    best_n_base_learner = cur_base_learner;
-                    best_bootstrap_size = curr_boot_strap_size;
-                }
-            }
-        }
-
-        System.out.println(maxF1Score);
-        System.out.println(compute_f1_score(matrix, matrixValidation, forest));
-        System.out.println(best_n_base_learner);
-        System.out.println(best_bootstrap_size);
+//        // hyper parameter tuning for random forest
+//        double maxF1Score = 0.0;
+//        int best_n_base_learner = 10;
+//        int best_bootstrap_size = 500;
+//        RandomForest forest =  new RandomForest(10, 500);
+//
+//        for (int cur_base_learner = best_n_base_learner; cur_base_learner < 100; cur_base_learner+=10) {
+//            for (int curr_boot_strap_size = best_bootstrap_size; curr_boot_strap_size < 2000; curr_boot_strap_size+=250) {
+//                forest = new RandomForest(cur_base_learner, curr_boot_strap_size);
+//                forest.train(matrixTrain);
+//                double f1_score = compute_f1_score(matrix, matrixValidation, forest);
+//                if (f1_score > maxF1Score) {
+//                    maxF1Score = f1_score;
+//                    best_n_base_learner = cur_base_learner;
+//                    best_bootstrap_size = curr_boot_strap_size;
+//                }
+//            }
+//        }
+//
+//        System.out.println(maxF1Score);
+//        System.out.println(compute_f1_score(matrix, matrixValidation, forest));
+//        System.out.println(best_n_base_learner);
+//        System.out.println(best_bootstrap_size);
     }
 }
