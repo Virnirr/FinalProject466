@@ -321,6 +321,11 @@ public class Main {
         confusionMatrix[1][0] = FP;
         confusionMatrix[1][1] = TN;
 
+//        System.out.println("True Positive %d".formatted(TP));
+//        System.out.println("False Positive %d".formatted(FP));
+//        System.out.println("False Negative %d".formatted(FN));
+//        System.out.println("True Negative %d".formatted(TN));
+
         return confusionMatrix;
     }
 
@@ -346,7 +351,11 @@ public class Main {
         double precision = compute_precision(confusionMatrix);
         double recall = compute_recall(confusionMatrix);
 
-        return 1 * precision * recall / (precision + recall);
+//        System.out.println("Precision: %f".formatted(precision));
+//        System.out.println("Recall: %f".formatted(recall));
+//        System.out.println("F1 Score: %f".formatted((2 * precision * recall) / (precision + recall)));
+
+        return 2 * precision * recall / (precision + recall);
     }
 
     public static void writeDoubleArrayToCSV(String fileName, double[][] data) {
@@ -377,6 +386,7 @@ public class Main {
         double[][] normalizedMatrix;
         double[][] normalizedMatrixTrain;
         double[][]normalizedMatrixTest;
+        int[][] matrixValidation;
         Regression regressionObj;
 
         normalizedMatrix = normalizeData(sourceMatrix);
@@ -385,14 +395,18 @@ public class Main {
         // split into train and test lists for the binned dataset
         List<int[]> listMatrix = new ArrayList<>(Arrays.asList(matrix));
         Collections.shuffle(listMatrix, new Random());
-        int splitIndex = (int) (listMatrix.size() * 0.8);
-        matrixTrain = listMatrix.subList(0, splitIndex).toArray(new int[0][]);
-        matrixTest = listMatrix.subList(splitIndex, listMatrix.size()).toArray(new int[0][]);
+
+        int splitTraining = (int) (listMatrix.size() * 0.7);
+        int splitValidation = (int) (listMatrix.size() * 0.9);
+
+        matrixTrain = listMatrix.subList(0, splitTraining).toArray(new int[0][]);
+        matrixValidation = listMatrix.subList(splitTraining, splitValidation).toArray(new int[0][]);
+        matrixTest = listMatrix.subList(splitValidation, listMatrix.size()).toArray(new int[0][]);
 
         // split into train and test lists for the normalized dataset
         List<double[]> normalizedListMatrix = new ArrayList<>(Arrays.asList(normalizedMatrix));
         Collections.shuffle(normalizedListMatrix, new Random());
-        splitIndex = (int) (normalizedListMatrix.size() * 0.8);
+        int splitIndex = (int) (normalizedListMatrix.size() * 0.8);
         normalizedMatrixTrain = normalizedListMatrix.subList(0, splitIndex).toArray(new double[0][]);
         normalizedMatrixTest = normalizedListMatrix.subList(splitIndex, normalizedListMatrix.size()).toArray(new double[0][]);
 
@@ -428,11 +442,28 @@ public class Main {
 //        System.out.println(attributes);
 //
 
+        // hyper parameter tuning for random forest
+        double maxF1Score = 0.0;
+        int best_n_base_learner = 10;
+        int best_bootstrap_size = 500;
+        RandomForest forest =  new RandomForest(10, 500);
 
-//        RandomForest forest = new RandomForest(5, 2000);
-//        forest.train(matrixTrain);
-//
-//
-//        System.out.println(compute_f1_score(matrix, matrixTest, forest));
+        for (int cur_base_learner = best_n_base_learner; cur_base_learner < 100; cur_base_learner+=10) {
+            for (int curr_boot_strap_size = best_bootstrap_size; curr_boot_strap_size < 2000; curr_boot_strap_size+=250) {
+                forest = new RandomForest(cur_base_learner, curr_boot_strap_size);
+                forest.train(matrixTrain);
+                double f1_score = compute_f1_score(matrix, matrixValidation, forest);
+                if (f1_score > maxF1Score) {
+                    maxF1Score = f1_score;
+                    best_n_base_learner = cur_base_learner;
+                    best_bootstrap_size = curr_boot_strap_size;
+                }
+            }
+        }
+
+        System.out.println(maxF1Score);
+        System.out.println(compute_f1_score(matrix, matrixValidation, forest));
+        System.out.println(best_n_base_learner);
+        System.out.println(best_bootstrap_size);
     }
 }

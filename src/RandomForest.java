@@ -45,8 +45,8 @@ public class RandomForest {
 
         ArrayList<ArrayList<Integer>> bootstrap_sample = this.create_bootstrap_samples(data);
 
-        System.out.println(bootstrap_sample);
-        System.out.println("this is the bootstrap size %d".formatted(bootstrap_sample.size()));
+//        System.out.println(bootstrap_sample);
+//        System.out.println("this is the bootstrap size %d".formatted(bootstrap_sample.size()));
 
 
         // Learn base_learner number of Decision Trees
@@ -71,12 +71,12 @@ public class RandomForest {
     public int prediction_list(ArrayList<Integer> features_to_predict) {
         ArrayList<Integer> pred_prob_list = new ArrayList<>();
 
-        System.out.println(features_to_predict);
+//        System.out.println(features_to_predict);
         for (DecisionTree tree : this.forest) {
             pred_prob_list.add(tree.predictLabel(features_to_predict));
         }
 
-        System.out.println(pred_prob_list);
+//        System.out.println(pred_prob_list);
 
         int count_of_0 = 0;
         int count_of_1 = 0;

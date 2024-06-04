@@ -178,7 +178,7 @@ public class DecisionTree {
         // base case return if either attribute or rows is empty
         if (attributes.size() == 0 || rows.size() == 0) {
             int mostCommonLabel = this.findMostCommonValue(rows);
-            System.out.println("\t".repeat(level) + "value = " + mostCommonLabel);
+//            System.out.println("\t".repeat(level) + "value = " + mostCommonLabel);
             // add leaf node to parent node as final path
             parent.addTreePath(new TreeNode(-1, -1, null, mostCommonLabel));
             return;
@@ -221,9 +221,9 @@ public class DecisionTree {
             ArrayList<Integer> rowsAssocWithAttrVal = entry.getValue();
             // get the IGR of current value to recurse on; note: base case will result in printing value if <= 0.01
             double currValIGR = this.computeIGR(attributeWithHighestIGR, rows);
-            System.out.println("\t".repeat(level) + "When attribute " +
-                    (attributeWithHighestIGR + 1) +
-                    " has value " + valInAttribute);
+//            System.out.println("\t".repeat(level) + "When attribute " +
+//                    (attributeWithHighestIGR + 1) +
+//                    " has value " + valInAttribute);
 
             TreeNode childNode = new TreeNode(attributeWithHighestIGR, valInAttribute, new ArrayList<>(), -1);
 
