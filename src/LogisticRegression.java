@@ -8,7 +8,7 @@ public class LogisticRegression extends Regression{
     }
 
     // Fit the model to the data
-    public double[] fit(int[][] inputs, int[] expectedOutputs) {
+    public double[] fit(double[][] inputs, double[] expectedOutputs) {
 
         int numFeatures = inputs[0].length; // Number of features
         int numSamples = inputs.length; // Number of samples
@@ -26,7 +26,7 @@ public class LogisticRegression extends Regression{
 
             // Loop through each sample
             for (int j = 0; j < numSamples; j++) {
-                int[] inputVector = inputs[j];
+                double[] inputVector = inputs[j];
                 double expectedOutput = expectedOutputs[j];
                 double prediction = predict(inputVector);
                 double error = prediction - expectedOutput;
@@ -62,7 +62,7 @@ public class LogisticRegression extends Regression{
     }
 
     // Make a prediction based on current weights and bias using the sigmoid function
-    public double predict(int[] inputVector) {
+    public double predict(double[] inputVector) {
         return sigmoid(super.predict(inputVector)); // Sigmoid Function for classification
     }
 
@@ -75,14 +75,14 @@ public class LogisticRegression extends Regression{
     public static class Main {
         public static void main(String[] args) {
             // Example data for prediction
-            int[][] testData = {
+            double[][] testData = {
                     {1073, 1, 37, 79, 0, 1, 0, 100, 0, 1, 18, 0, 1, 1, 2, 0, 1, 0, 322, 469, 882, 754},
                     {324, 0, 33, 73, 0, 1, 0, 90, 0, 1, 224, 0, 1, 1, 3, 1, 1, 1, 168, 575, 1035, 1525},
                     {495, 1, 43, 69, 0, 1, 0, 100, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 377, 333, 1147, 1088},
                     {1201, 3, 42, 89, 0, 1, 0, 100, 1, 1, 513, 0, 1, 1, 3, 0, 0, 0, 238, 324, 775, 1019},
                     {934, 0, 37, 137, 0, 1, 0, 100, 0, 0, 4, 0, 1, 0, 3, 0, 0, 1, 500, 443, 1601, 849}
             };
-            int[] expectedOutputs = {1, 1, 1, 1, 0}; // Assuming last column represents the target variable (AIDS or not)
+            double[] expectedOutputs = {1, 1, 1, 1, 0}; // Assuming last column represents the target variable (AIDS or not)
 
             // Create an instance of logistic regression with specified learning rate and number of iterations
             LogisticRegression logisticRegression = new LogisticRegression(0.01, 1000);

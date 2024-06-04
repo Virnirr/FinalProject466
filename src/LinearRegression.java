@@ -7,7 +7,7 @@ public class LinearRegression extends Regression {
     }
 
     // Fit the model to the data
-    public double[] fit(int[][] inputs, int[] expectedOutputs) {
+    public double[] fit(double[][] inputs, double[] expectedOutputs) {
         int numFeatures = inputs[0].length;
         int numSamples = inputs.length;
 
@@ -25,7 +25,7 @@ public class LinearRegression extends Regression {
 
             // go to each sample
             for (int j = 0; j < numSamples; j++) {
-                int[] inputVector = inputs[j];
+                double[] inputVector = inputs[j];
                 double expectedOutput = expectedOutputs[j];
                 double prediction = predict(inputVector);
                 double error = prediction - expectedOutput;

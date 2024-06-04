@@ -9,6 +9,8 @@ public class Main {
     private static final int SIZE_OF_MATRIX = 2139;
     private static final int SIZE_OF_COLS = 23;
     private static final String RELATIVE_FILE_PATH = "/src/output.csv";
+    private static final String SOURCE_FILE_PATH = "/src/AIDS_Classification.csv";
+
     public static int[][] aids_data_parser(String filename) {
         try {
             int[][] matrix = new int[SIZE_OF_MATRIX][];
@@ -38,6 +40,7 @@ public class Main {
             throw new RuntimeException(e);
         }
     }
+
     public static int[] arrayListToArray(ArrayList<Double> row) {
         int[] arrayRow = new int[SIZE_OF_COLS];
         for (int i = 0; i < row.size(); i++) {
@@ -56,8 +59,8 @@ public class Main {
 
     public static double[][] normalizeData(int[][] data) {
         int rows = data.length;
-        int cols = data[0].length;
-        double[][] normalizedData = new double[rows][cols];
+        int cols = data[0].length-1;
+        double[][] normalizedData = new double[rows][cols+1];
         int[] min = new int[cols];
         int[] max = new int[cols];
 
@@ -86,6 +89,11 @@ public class Main {
                     normalizedData[i][j] = (double)(data[i][j] - min[j]) / (max[j] - min[j]);
                 }
             }
+        }
+
+        // copy over the labels
+        for (int i = 0; i<rows; i++){
+            normalizedData[i][cols] = (double) data[i][cols];
         }
 
         return normalizedData;
@@ -209,10 +217,10 @@ public class Main {
 //        System.out.println(Arrays.deepToString(matrix));
     }
 
-    public static int[] getLastColumn(int[][] matrix) {
+    public static double[] getLastColumn(double[][] matrix) {
         int rows = matrix.length;
         int cols = matrix[0].length;
-        int[] lastColumn = new int[rows];
+        double[] lastColumn = new double[rows];
 
         for (int i = 0; i < rows; i++) {
             lastColumn[i] = matrix[i][cols - 1]; // Assign the last element of each row to the new array
@@ -221,10 +229,10 @@ public class Main {
         return lastColumn;
     }
 
-    public static int[][] removeLastColumn(int[][] array) {
+    public static double[][] removeLastColumn(double[][] array) {
         int rows = array.length;
         int cols = array[0].length - 1;
-        int[][] newArray = new int[rows][cols];
+        double[][] newArray = new double[rows][cols];
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
@@ -235,10 +243,15 @@ public class Main {
         return newArray;
     }
 
-    public static Regression doRegression(int[][] matrix, boolean linearLogFlag, boolean isTraining, double learningRate, int numIterations, Regression oldRegression){
+    public static Regression doRegression(double[][] matrix,
+                                          boolean linearLogFlag,
+                                          boolean isTraining,
+                                          double learningRate,
+                                          int numIterations,
+                                          Regression oldRegression){
         double[] outputs;
-        int[][] inputs;
-        int[] labels;
+        double[][] inputs;
+        double[] labels;
         Regression regression;
 
         // use old regression (so i can re-run with test set and old weights)
@@ -262,9 +275,11 @@ public class Main {
 
         // print mse and weights and stuff
         outputs = regression.predictAll(inputs);
+        System.out.print("MSE: ");
         System.out.println(regression.mse(labels, outputs));
+        System.out.print("BCE: ");
         System.out.println(regression.bce(labels, outputs));
-        System.out.println(regression); // prints weights and bias
+//        System.out.println(regression); // prints weights and bias
 
         return regression;
     }
@@ -333,35 +348,67 @@ public class Main {
 
         return 1 * precision * recall / (precision + recall);
     }
+
+    public static void writeDoubleArrayToCSV(String fileName, double[][] data) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+            for (int i = 0; i < data.length; i++) {
+                for (int j = 0; j < data[i].length; j++) {
+                    writer.write(String.valueOf(data[i][j]));
+                    if (j < data[i].length - 1) {
+                        writer.write(",");
+                    }
+                }
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
         String filePath = new File("").getAbsolutePath();
         String path_to_data = filePath.concat(RELATIVE_FILE_PATH);
+        String path_to_src_data = filePath.concat(SOURCE_FILE_PATH);
         System.out.println(path_to_data);
         int[][] matrix = aids_data_parser(path_to_data);
         int[][] matrixTrain;
         int[][] matrixTest;
+        int[][] sourceMatrix = aids_data_parser(path_to_src_data);
+        double[][] normalizedMatrix;
+        double[][] normalizedMatrixTrain;
+        double[][]normalizedMatrixTest;
         Regression regressionObj;
 
+        normalizedMatrix = normalizeData(sourceMatrix);
+//        writeDoubleArrayToCSV("./src/normalized.csv", normalizedMatrix);
+
+        // split into train and test lists for the binned dataset
         List<int[]> listMatrix = new ArrayList<>(Arrays.asList(matrix));
         Collections.shuffle(listMatrix, new Random());
         int splitIndex = (int) (listMatrix.size() * 0.8);
-
         matrixTrain = listMatrix.subList(0, splitIndex).toArray(new int[0][]);
         matrixTest = listMatrix.subList(splitIndex, listMatrix.size()).toArray(new int[0][]);
 
+        // split into train and test lists for the normalized dataset
+        List<double[]> normalizedListMatrix = new ArrayList<>(Arrays.asList(normalizedMatrix));
+        Collections.shuffle(normalizedListMatrix, new Random());
+        splitIndex = (int) (normalizedListMatrix.size() * 0.8);
+        normalizedMatrixTrain = normalizedListMatrix.subList(0, splitIndex).toArray(new double[0][]);
+        normalizedMatrixTest = normalizedListMatrix.subList(splitIndex, normalizedListMatrix.size()).toArray(new double[0][]);
+
 
         // linear, train
-//        System.out.println("\nlinear, train");
-//        regressionObj = doRegression(matrixTrain, true, true, 0.0001, 10000, null);
-//        // linear, test
-//        System.out.println("\nlinear, test");
-//        doRegression(matrixTest, true, false, 0.0001, 10000, regressionObj);
-//        // logistic, train
-//        System.out.println("\nLogistic, train");
-//        regressionObj = doRegression(matrixTrain, false, true, 0.001, 2000, null);
-//        // logistic, test
-//        System.out.println("\nLogistic, test");
-//        doRegression(matrixTest, false, false, 0.001, 2000, regressionObj);
+        System.out.println("\nlinear, train");
+        regressionObj = doRegression(normalizedMatrixTrain, true, true, 0.0001, 10000, null);
+        // linear, test
+        System.out.println("\nlinear, test");
+        doRegression(normalizedMatrixTest, true, false, 0.0001, 10000, regressionObj);
+        // logistic, train
+        System.out.println("\nLogistic, train");
+        regressionObj = doRegression(normalizedMatrixTrain, false, true, 0.001, 2000, null);
+        // logistic, test
+        System.out.println("\nLogistic, test");
+        doRegression(normalizedMatrixTest, false, false, 0.001, 2000, regressionObj);
 
 //        categorize_features(matrix);
 //        System.out.println(Arrays.deepToString(normalizeData(matrix)));
@@ -382,10 +429,10 @@ public class Main {
 //
 
 
-        RandomForest forest = new RandomForest(5, 2000);
-        forest.train(matrixTrain);
-
-
-        System.out.println(compute_f1_score(matrix, matrixTest, forest));
+//        RandomForest forest = new RandomForest(5, 2000);
+//        forest.train(matrixTrain);
+//
+//
+//        System.out.println(compute_f1_score(matrix, matrixTest, forest));
     }
 }

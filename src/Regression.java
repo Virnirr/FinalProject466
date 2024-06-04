@@ -11,10 +11,10 @@ public abstract class Regression {
         this.numIterations = numIterations;
     }
 
-    public abstract double[] fit(int[][] inputs, int[] expectedOutputs);
+    public abstract double[] fit(double[][] inputs, double[] expectedOutputs);
 
     // Make a prediction based on current weights and bias
-    public double predict(int[] inputVector) {
+    public double predict(double[] inputVector) {
         double prediction = 0.0;
         for (int i = 0; i < inputVector.length; i++) {
             prediction += (double) (inputVector[i]) * weights[i];
@@ -24,7 +24,7 @@ public abstract class Regression {
     }
 
     // Make predictions for entire set of data
-    public double[] predictAll(int[][] inputs) {
+    public double[] predictAll(double[][] inputs) {
         double[] predictions = new double[inputs.length];
         for (int i = 0; i < inputs.length; i++) {
             predictions[i] = predict(inputs[i]);
@@ -33,12 +33,12 @@ public abstract class Regression {
     }
 
     // Calculate mean squared error between actual and predicted values
-    public double mse(int[] actualOutputs, double[] predictedOutputs) {
+    public double mse(double[] actualOutputs, double[] predictedOutputs) {
         int n = actualOutputs.length;
         double sumSquaredError = 0.0;
 
         for (int i = 0; i < n; i++) {
-            double error = (double)(actualOutputs[i]) - predictedOutputs[i];
+            double error = (actualOutputs[i]) - predictedOutputs[i];
             sumSquaredError += error * error;
         }
 
@@ -46,7 +46,7 @@ public abstract class Regression {
     }
 
     // calcualte binary cross entropy loss
-    public double bce(int[] actualOutputs, double[] predictedOutputs){
+    public double bce(double[] actualOutputs, double[] predictedOutputs){
         int n = actualOutputs.length;
         double sumError = 0.0;
 
